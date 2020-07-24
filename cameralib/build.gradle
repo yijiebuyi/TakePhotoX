@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+//github jitpack
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.yijiebuyi'
 
 android {
     compileSdkVersion 29
