@@ -24,7 +24,7 @@ import androidx.camera.view.PreviewView;
  * 修改日期
  */
 
-class CameraPreview extends PreviewView {
+public class CameraPreview extends PreviewView {
     private final float MAX_SCALE = 4.0f;
     private final float MIN_SCALE = 1.0f;
 

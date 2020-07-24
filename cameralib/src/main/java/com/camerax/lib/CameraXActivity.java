@@ -98,6 +98,18 @@ public class CameraXActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putParcelable(PhotoFragment.KEY_PHOTO_URI, fileUri);
         fg.setArguments(data);
+        fg.setOnPhotoListener(new OnPhotoListener() {
+            @Override
+            public void onPhotoSelect(Uri uri) {
+                finish();
+            }
+
+            @Override
+            public void onCancel() {
+                enterCameraFragment();
+            }
+        });
+
         ft.add(R.id.container, fg);
         ft.commit();
     }

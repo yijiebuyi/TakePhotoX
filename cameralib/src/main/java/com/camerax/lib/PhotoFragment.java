@@ -40,6 +40,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
     private ImageView mCancelBtn;
     private ImageView mConfirmSelectBtn;
 
+    private OnPhotoListener mOnPhotoListener;
+    private Uri mPhotoUri;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -71,8 +74,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
 
         Bundle data = getArguments();
         if (data != null) {
-            Uri uri = data.getParcelable(KEY_PHOTO_URI);
-            Glide.with(mContext).load(uri).into(mPhotoView);
+            mPhotoUri = data.getParcelable(KEY_PHOTO_URI);
+            Glide.with(mContext).load(mPhotoUri).into(mPhotoView);
         } else {
             Toast.makeText(mContext, "img load failed", Toast.LENGTH_SHORT).show();
         }
@@ -81,9 +84,17 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.confirm_select) {
-            mActivity.finish();
+            if (mOnPhotoListener != null) {
+                mOnPhotoListener.onPhotoSelect(mPhotoUri);
+            }
         } else if (v.getId() == R.id.cancel) {
-            ((CameraXActivity)mActivity).enterCameraFragment();
+            if (mOnPhotoListener != null) {
+                mOnPhotoListener.onCancel();
+            }
         }
+    }
+
+    public void setOnPhotoListener(OnPhotoListener listener) {
+        mOnPhotoListener = listener;
     }
 }
