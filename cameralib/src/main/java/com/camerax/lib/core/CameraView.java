@@ -405,6 +405,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     @Override
     public void switchAspect(@ExAspectRatio.ExRatio int ratio) {
+        mCameraParam.asRatio = ratio;
         setPreviewAspect(ratio);
         reset();
     }

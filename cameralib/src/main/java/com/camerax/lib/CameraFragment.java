@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.Fragment;
-import androidx.viewbinding.ViewBinding;
 
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.CameraView;
@@ -24,7 +23,6 @@ import com.camerax.lib.core.OnCameraListener;
 import com.camerax.lib.core.OnFocusListener;
 import com.camerax.lib.core.OnImgAnalysisListener;
 import com.camerax.lib.core.SimpleAnimListener;
-import com.camerax.lib.databinding.FragmentCemaraBinding;
 
 /**
  * Copyright (C) 2017
@@ -58,12 +56,20 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
      * top view
      */
     private View mTopPanel;
+    private View mCameraFuncLayout;
+
     private ImageView mCameraLightBtn;
     private View mCameraLightLayout;
     private TextView mCloseLightTv;
     private TextView mOpenLightTv;
     private TextView mAutoLightTv;
     private TextView mFillLightTv;
+
+    private ImageView mCameraSizeBtn;
+    private View mCameraSizeLayout;
+    private TextView mStandardSizeTv;
+    private TextView mFullscreenSizeTv;
+    private TextView mSquareSizeTv;
 
     /**
      * bottom panel
@@ -109,6 +115,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     }
 
     private void initView(View view) {
+        //bottom panel
         mBottomPanel = view.findViewById(R.id.bottom_panel);
 
         if (mHideBottomController) {
@@ -125,14 +132,17 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
             mSwitchCameraBtn.setOnClickListener(this);
         }
 
-        //camera flash light
+        //top panel
         mTopPanel = view.findViewById(R.id.top_panel);
+        mCameraFuncLayout = view.findViewById(R.id.camera_func_layout);
+
+        //flash light
         mCameraLightBtn = view.findViewById(R.id.camera_light_btn);
         mCameraLightLayout = view.findViewById(R.id.camera_light);
 
         mCameraLightBtn.setOnClickListener(this);
-        view.findViewById(R.id.light_state).setOnClickListener(this);
 
+        view.findViewById(R.id.light_state).setOnClickListener(this);
         mAutoLightTv = view.findViewById(R.id.auto_light);
         mOpenLightTv = view.findViewById(R.id.open_light);
         mCloseLightTv = view.findViewById(R.id.close_light);
@@ -144,6 +154,21 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         mFillLightTv.setOnClickListener(this);
 
         mFillLightTv.setVisibility(mCameraView.getCameraParam().faceFront ? View.GONE : View.VISIBLE);
+
+        //camera size
+        mCameraSizeBtn = view.findViewById(R.id.camera_size_btn);
+        mCameraSizeLayout = view.findViewById(R.id.camera_size);
+
+        mCameraSizeBtn.setOnClickListener(this);
+
+        view.findViewById(R.id.size_state).setOnClickListener(this);
+        mStandardSizeTv = view.findViewById(R.id.standard_size);
+        mFullscreenSizeTv = view.findViewById(R.id.fullscreen_size);
+        mSquareSizeTv = view.findViewById(R.id.square_size);
+
+        mStandardSizeTv.setOnClickListener(this);
+        mFullscreenSizeTv.setOnClickListener(this);
+        mSquareSizeTv.setOnClickListener(this);
     }
 
     private CameraOption initOption() {
@@ -186,7 +211,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
             mCameraView.switchFace();
         } else if (vid == R.id.cancel) {
             mCameraView.cancel();
-        } else if (vid == R.id.camera_light_btn) {
+        } else {
+            onCameraLightClick(vid);
+            onCameraSizeClick(vid);
+        }
+    }
+
+    private void onCameraLightClick(int vid) {
+        if (vid == R.id.camera_light_btn) {
             showLightLayout();
         } else if (vid == R.id.light_state) {
             hideLightLayout();
@@ -202,14 +234,23 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         } else if (vid == R.id.fill_light) {
             mCameraView.fillLight();
             hideLightLayout();
+        }
+    }
+
+    private void onCameraSizeClick(int vid) {
+        if (vid == R.id.camera_size_btn) {
+            showCameraSizeLayout();
         } else if (vid == R.id.size_state) {
-
+            hideCameraSizeLayout();
         } else if (vid == R.id.standard_size) {
-
+            hideCameraSizeLayout();
+            mCameraView.switchAspect(ExAspectRatio.RATIO_4_3);
         } else if (vid == R.id.fullscreen_size) {
-
+            hideCameraSizeLayout();
+            mCameraView.switchAspect(ExAspectRatio.RATIO_16_9);
         } else if (vid == R.id.square_size) {
-
+            mCameraView.switchAspect(ExAspectRatio.RATIO_1_1);
+            hideCameraSizeLayout();
         }
     }
 
@@ -217,13 +258,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         mCameraLightLayout.animate().alpha(1).setDuration(200).setListener(new SimpleAnimListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mCameraLightBtn.setAlpha(0.f);
+                mCameraFuncLayout.setAlpha(0.f);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 mCameraLightLayout.setVisibility(View.VISIBLE);
-                mCameraLightBtn.setVisibility(View.GONE);
+                mCameraFuncLayout.setVisibility(View.GONE);
             }
         }).start();
 
@@ -236,8 +277,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
             @Override
             public void onAnimationEnd(Animator animation) {
                 mCameraLightLayout.setVisibility(View.GONE);
-                mCameraLightBtn.setAlpha(1.f);
-                mCameraLightBtn.setVisibility(View.VISIBLE);
+                mCameraFuncLayout.setAlpha(1.f);
+                mCameraFuncLayout.setVisibility(View.VISIBLE);
                 setCameraLightBtnStyle();
             }
 
@@ -278,6 +319,53 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
                 break;
             case IFlashLight.FILL:
                 mCameraLightBtn.setImageResource(R.drawable.ic_camera_fill_light);
+                break;
+        }
+    }
+
+    private void showCameraSizeLayout() {
+        mCameraSizeLayout.animate().alpha(1).setDuration(200).setListener(new SimpleAnimListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mCameraFuncLayout.setAlpha(0.f);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCameraSizeLayout.setVisibility(View.VISIBLE);
+                mCameraFuncLayout.setVisibility(View.GONE);
+            }
+        }).start();
+
+        setCameraSizeItemStyle();
+    }
+
+    private void hideCameraSizeLayout() {
+        mCameraSizeLayout.animate().alpha(0).setListener(new SimpleAnimListener() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCameraSizeLayout.setVisibility(View.GONE);
+                mCameraFuncLayout.setAlpha(1.f);
+                mCameraFuncLayout.setVisibility(View.VISIBLE);
+            }
+
+        }).setDuration(200).start();
+    }
+
+    private void setCameraSizeItemStyle() {
+        mStandardSizeTv.setSelected(false);
+        mFullscreenSizeTv.setSelected(false);
+        mSquareSizeTv.setSelected(false);
+        switch (mCameraView.getCameraParam().asRatio) {
+            case ExAspectRatio.RATIO_4_3:
+                mStandardSizeTv.setSelected(true);
+                break;
+            case ExAspectRatio.RATIO_16_9:
+                mFullscreenSizeTv.setSelected(true);
+                break;
+            case ExAspectRatio.RATIO_1_1:
+                mSquareSizeTv.setSelected(true);
                 break;
         }
     }
