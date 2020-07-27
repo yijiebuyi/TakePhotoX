@@ -27,6 +27,7 @@ import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -158,8 +159,43 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     public void initCamera(CameraOption option, LifecycleOwner lifecycleOwner) {
         mLifecycleOwner = lifecycleOwner;
         setOption(option);
+        setPreviewAspect(mCameraParam.asRatio);
 
         reset();
+    }
+
+    private void setPreviewAspect(@ExAspectRatio.ExRatio int asRatio) {
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) getLayoutParams();
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+        params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+
+        int bottomPanelHeight = CameraUtil.dip2px(mContext, 90);
+        int bottomPanelOffset = SCREEN_HEIGHT - bottomPanelHeight;
+
+        int width = SCREEN_WIDTH;
+        int height = SCREEN_HEIGHT;
+        switch (asRatio) {
+            case ExAspectRatio.RATIO_16_9:
+                height = (int) (width * 16 / 9.0F);
+                setLayoutParams(params);
+                break;
+            case ExAspectRatio.RATIO_4_3:
+                height = (int) (width * 4 / 3.0F);
+                params.topMargin = (SCREEN_HEIGHT - height) / 2;
+                if (params.topMargin + height  > bottomPanelOffset) {
+                    params.topMargin = bottomPanelOffset - height;
+                }
+                break;
+            case ExAspectRatio.RATIO_1_1:
+                height = width;
+                params.topMargin = (SCREEN_HEIGHT - width) / 2;
+                setLayoutParams(params);
+                break;
+        }
+
+        params.width = width;
+        params.height = height;
+        setLayoutParams(params);
     }
 
     /**
@@ -171,15 +207,8 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
             return;
         }
 
-        if (option.getRatio() == ExAspectRatio.RATIO_16_9
-                || option.getRatio() == ExAspectRatio.RATIO_4_3
-                || option.getRatio() == ExAspectRatio.RATIO_1_1) {
-            mCameraParam.asRatio = option.getRatio();
-        } else {
-            throw new IllegalArgumentException("ratio param error!");
-        }
-
         mCameraParam.faceFront = option.isFaceFront();
+        mCameraParam.asRatio = option.getRatio();
         mIsImgAnalysis = option.isAnalysisImg();
         mOutFilePath = option.getOutPath();
 
@@ -368,6 +397,12 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         if (mOnCameraFaceListener != null) {
             mOnCameraFaceListener.onSwitchCamera(mCameraParam.faceFront);
         }
+        reset();
+    }
+
+    @Override
+    public void switchAspect(@ExAspectRatio.ExRatio int ratio) {
+        setPreviewAspect(ratio);
         reset();
     }
 

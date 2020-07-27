@@ -57,4 +57,27 @@ public class CameraUtil {
         String dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
         return new File(dir + "/" + System.currentTimeMillis() + ".jpg");
     }
+
+    /**
+     * dip 转px
+     *
+     * @param context
+     * @param dip
+     * @return
+     */
+    public static int dip2px(Context context, float dip) {
+        return (int) (context.getResources().getDisplayMetrics().density * dip + 0.5f);
+    }
+
+    /**
+     * px 转dip
+     *
+     * @param context
+     * @param pxValue
+     * @return
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
 }

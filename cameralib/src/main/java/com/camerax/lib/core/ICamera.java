@@ -31,6 +31,12 @@ interface ICamera {
     public void switchFace();
 
     /**
+     * 相机切换预览比例和拍照比例
+     * @param ratio
+     */
+    public void switchAspect(@ExAspectRatio.ExRatio int ratio);
+
+    /**
      *  重置相机
      */
     public void reset();
