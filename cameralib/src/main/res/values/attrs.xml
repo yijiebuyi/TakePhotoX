@@ -5,4 +5,5 @@
         <attr name="focus_succ_id" format="integer" />
         <attr name="focus_fail_id" format="integer" />
     </declare-styleable>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.camerax.lib;
+package com.camerax.lib.core;
 
 import androidx.annotation.NonNull;
 import androidx.camera.core.ImageProxy;

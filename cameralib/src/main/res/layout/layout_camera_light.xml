@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/light_state"
+        style="@style/CameraFlashLight"
+        android:src="@drawable/ic_camera_close_light" />
+
+    <TextView
+        android:id="@+id/close_light"
+        style="@style/CameraFlashLight"
+        android:text="@string/close_camera_light"/>
+
+    <TextView
+        android:id="@+id/auto_light"
+        style="@style/CameraFlashLight"
+        android:text="@string/auto_camera_light" />
+
+    <TextView
+        android:id="@+id/open_light"
+        style="@style/CameraFlashLight"
+        android:text="@string/open_camera_light" />
+
+    <TextView
+        android:id="@+id/fill_light"
+        style="@style/CameraFlashLight"
+        android:text="@string/fill_camera_light" />
+
+</LinearLayout>

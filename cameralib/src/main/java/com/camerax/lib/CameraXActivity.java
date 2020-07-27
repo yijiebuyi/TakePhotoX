@@ -12,6 +12,10 @@ import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.camerax.lib.core.CameraOption;
+import com.camerax.lib.core.ExAspectRatio;
+import com.camerax.lib.core.OnCameraListener;
+import com.camerax.lib.core.OnImgAnalysisListener;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.bean.Permissions;
@@ -47,9 +51,14 @@ public class CameraXActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         final CameraFragment cfg = new CameraFragment();
+
+        CameraOption option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
+                .faceFront(true)
+                .build();
+
         Bundle data = new Bundle();
-        //data.putBoolean(CameraFragment.KEY_IMG_ANALYSIS, true);
         data.putBoolean(CameraFragment.KEY_SHOW_BOTTOM_CONTROLLER, true);
+        data.putSerializable(CameraFragment.KEY_CAMERA_OPTION, option);
         cfg.setArguments(data);
         cfg.setOnCameraListener(new OnCameraListener() {
             @Override
@@ -92,9 +101,9 @@ public class CameraXActivity extends AppCompatActivity {
 
     public void enterPhotoFragment(Uri fileUri) {
         FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        final FragmentTransaction ft = fm.beginTransaction();
 
-        PhotoFragment fg = new PhotoFragment();
+        final PhotoFragment fg = new PhotoFragment();
         Bundle data = new Bundle();
         data.putParcelable(PhotoFragment.KEY_PHOTO_URI, fileUri);
         fg.setArguments(data);
@@ -108,9 +117,14 @@ public class CameraXActivity extends AppCompatActivity {
             public void onCancel() {
                 enterCameraFragment();
             }
+
+            @Override
+            public void onPhotoLoad(boolean succ) {
+
+            }
         });
 
-        ft.add(R.id.container, fg);
+        ft.replace(R.id.container, fg);
         ft.commit();
     }
 

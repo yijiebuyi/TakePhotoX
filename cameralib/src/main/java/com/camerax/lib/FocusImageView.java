@@ -2,13 +2,11 @@ package com.camerax.lib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Point;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;

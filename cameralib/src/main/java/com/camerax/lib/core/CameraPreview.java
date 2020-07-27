@@ -1,4 +1,4 @@
-package com.camerax.lib;
+package com.camerax.lib.core;
 
 import android.content.Context;
 import android.util.AttributeSet;

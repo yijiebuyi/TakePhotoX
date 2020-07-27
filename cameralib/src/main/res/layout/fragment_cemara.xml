@@ -5,11 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.camerax.lib.CameraPreview
+    <com.camerax.lib.core.CameraView
         android:id="@+id/preview_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="MissingClass" />
+
+    <com.camerax.lib.FocusImageView
+        android:id="@+id/focus_view"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:focus_fail_id="@drawable/ic_focus_failed"
+        app:focus_succ_id="@drawable/ic_focus_focused"
+        app:focusing_id="@drawable/ic_focus_focusing"
+        tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_container"
@@ -54,13 +63,26 @@
             app:layout_constraintLeft_toLeftOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.camerax.lib.FocusImageView
-        android:id="@+id/focus_view"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        app:focus_fail_id="@drawable/ic_focus_failed"
-        app:focusing_id="@drawable/ic_focus_focusing"
-        app:focus_succ_id="@drawable/ic_focus_focused"
-        tools:ignore="MissingConstraints" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#33000000"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/camera_light_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="26dp"
+            style="@style/CameraFlashLight"
+            android:src="@drawable/ic_camera_close_light" />
+
+        <include
+            android:id="@+id/camera_light"
+            android:visibility="gone"
+            layout="@layout/layout_camera_light"/>
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

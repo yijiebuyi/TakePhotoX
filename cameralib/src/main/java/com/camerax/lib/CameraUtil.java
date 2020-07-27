@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Size;
 
+import com.camerax.lib.core.ExAspectRatio;
+
 import java.io.File;
 
 /**

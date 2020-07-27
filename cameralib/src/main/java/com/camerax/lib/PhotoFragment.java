@@ -2,6 +2,7 @@ package com.camerax.lib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 /**
  * Copyright (C) 2017
@@ -75,7 +80,23 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
         Bundle data = getArguments();
         if (data != null) {
             mPhotoUri = data.getParcelable(KEY_PHOTO_URI);
-            Glide.with(mContext).load(mPhotoUri).into(mPhotoView);
+            Glide.with(mContext).load(mPhotoUri).addListener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    if (mOnPhotoListener != null) {
+                        mOnPhotoListener.onPhotoLoad(false);
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    if (mOnPhotoListener != null) {
+                        mOnPhotoListener.onPhotoLoad(true);
+                    }
+                    return false;
+                }
+            }).into(mPhotoView);
         } else {
             Toast.makeText(mContext, "img load failed", Toast.LENGTH_SHORT).show();
         }

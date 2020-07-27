@@ -3,4 +3,9 @@
 
     <string name="permission_grant_fail">授权失败</string>
     <string name="qr_code_fail">无法识别二维码识别</string>
+
+    <string name="open_camera_light">打开</string>
+    <string name="close_camera_light">关闭</string>
+    <string name="auto_camera_light">自动</string>
+    <string name="fill_camera_light">补光</string>
 </resources>

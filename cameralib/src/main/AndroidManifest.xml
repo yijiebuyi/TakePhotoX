@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
         android:allowBackup="true"
@@ -12,8 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".CameraXActivity"
-            android:theme="@style/NotitleTheme"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/NotitleTheme"/>
 
     </application>
 </manifest>

@@ -1,4 +1,4 @@
-package com.camerax.lib;
+package com.camerax.lib.core;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.RestrictTo;
@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 
 public class ExAspectRatio {
+    public static final int RATIO_UNKNOWN = -2;
     /** 1:1 standard aspect ratio. */
     public static final int RATIO_1_1 = -1;
     /** 4:3 standard aspect ratio. */
@@ -34,7 +35,7 @@ public class ExAspectRatio {
     /**
      * @hide
      */
-    @IntDef({RATIO_1_1, RATIO_4_3, RATIO_16_9})
+    @IntDef({RATIO_UNKNOWN, RATIO_1_1, RATIO_4_3, RATIO_16_9})
     @Retention(RetentionPolicy.SOURCE)
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public @interface ExRatio {

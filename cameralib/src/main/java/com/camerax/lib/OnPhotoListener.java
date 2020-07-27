@@ -18,6 +18,12 @@ import android.net.Uri;
 
 public interface OnPhotoListener {
     /**
+     * 图片加载完成回调
+     * @param succ
+     */
+    void onPhotoLoad(boolean succ);
+
+    /**
      * 图片被选择
      */
     void onPhotoSelect(Uri uri);
