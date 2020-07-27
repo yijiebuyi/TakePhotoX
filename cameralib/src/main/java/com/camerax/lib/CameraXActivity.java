@@ -1,6 +1,7 @@
 package com.camerax.lib;
 
 import android.Manifest;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -110,7 +111,7 @@ public class CameraXActivity extends AppCompatActivity {
         fg.setOnPhotoListener(new OnPhotoListener() {
             @Override
             public void onPhotoSelect(Uri uri) {
-                finish();
+                finishWithData(uri);
             }
 
             @Override
@@ -148,5 +149,12 @@ public class CameraXActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void finishWithData(Uri uri) {
+        Intent intent = new Intent();
+        intent.setData(uri);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
