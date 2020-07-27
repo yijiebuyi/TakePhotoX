@@ -21,7 +21,7 @@
         tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottom_container"
+        android:id="@+id/bottom_panel"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="#33000000"
@@ -64,6 +64,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
+        android:id="@+id/top_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#33000000"

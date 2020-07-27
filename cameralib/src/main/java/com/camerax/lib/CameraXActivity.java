@@ -63,7 +63,7 @@ public class CameraXActivity extends AppCompatActivity {
         cfg.setOnCameraListener(new OnCameraListener() {
             @Override
             public void onTaken(Uri uri) {
-                cfg.hideBottomView(false);
+                cfg.hidePanel(false);
                 enterPhotoFragment(uri);
             }
 

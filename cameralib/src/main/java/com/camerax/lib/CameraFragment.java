@@ -49,21 +49,24 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     private CameraView mCameraView;
 
     /**
-     * view handle
+     * top view
      */
-    private View mBottomView;
-    private ImageView mTakePhotoBtn;
-    private ImageView mCancelBtn;
-    private ImageView mSwitchCameraBtn;
-    private FocusImageView mFocusImageView;
-
+    private View mTopPanel;
     private ImageView mCameraLightBtn;
     private View mCameraLightLayout;
-
     private TextView mCloseLightTv;
     private TextView mOpenLightTv;
     private TextView mAutoLightTv;
     private TextView mFillLightTv;
+
+    /**
+     * bottom panel
+     */
+    private View mBottomPanel;
+    private ImageView mTakePhotoBtn;
+    private ImageView mCancelBtn;
+    private ImageView mSwitchCameraBtn;
+    private FocusImageView mFocusImageView;
 
     /**
      * 是否隐藏底部控制器
@@ -96,12 +99,12 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     }
 
     private void initView(View view) {
-        mBottomView = view.findViewById(R.id.bottom_container);
+        mBottomPanel = view.findViewById(R.id.bottom_panel);
 
         if (mHideBottomController) {
-            mBottomView.setVisibility(View.GONE);
+            mBottomPanel.setVisibility(View.GONE);
         } else {
-            mBottomView.setVisibility(View.VISIBLE);
+            mBottomPanel.setVisibility(View.VISIBLE);
             mTakePhotoBtn = view.findViewById(R.id.take_photo);
             mCancelBtn = view.findViewById(R.id.cancel);
             mSwitchCameraBtn = view.findViewById(R.id.switch_camera);
@@ -113,6 +116,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         }
 
         //camera flash light
+        mTopPanel = view.findViewById(R.id.top_panel);
         mCameraLightBtn = view.findViewById(R.id.camera_light_btn);
         mCameraLightLayout = view.findViewById(R.id.camera_light);
 
@@ -215,6 +219,37 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
             }
         }).start();
 
+        setCameraLightItemStyle();
+    }
+
+    private void hideLightLayout() {
+        mCameraLightLayout.animate().alpha(0).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCameraLightLayout.setVisibility(View.GONE);
+                mCameraLightBtn.setAlpha(1.f);
+                mCameraLightBtn.setVisibility(View.VISIBLE);
+                setCameraLightBtnStyle();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).setDuration(200).start();
+    }
+
+    private void setCameraLightItemStyle() {
         mAutoLightTv.setSelected(false);
         mOpenLightTv.setSelected(false);
         mCloseLightTv.setSelected(false);
@@ -235,54 +270,38 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         }
     }
 
-    private void hideLightLayout() {
-        mCameraLightLayout.animate().alpha(0).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mCameraLightLayout.setVisibility(View.GONE);
-                mCameraLightBtn.setAlpha(1.f);
-                mCameraLightBtn.setVisibility(View.VISIBLE);
-
-
-                switch (mCameraView.getCameraParam().lightState) {
-                    case IFlashLight.CLOSE:
-                        mCameraLightBtn.setImageResource(R.drawable.ic_camera_close_light);
-                        break;
-                    case IFlashLight.OPEN:
-                        mCameraLightBtn.setImageResource(R.drawable.ic_camera_open_light);
-                        break;
-                    case IFlashLight.AUTO:
-                        mCameraLightBtn.setImageResource(R.drawable.ic_camera_auto_light);
-                        break;
-                    case IFlashLight.FILL:
-                        break;
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        }).setDuration(200).start();
+    private void setCameraLightBtnStyle() {
+        switch (mCameraView.getCameraParam().lightState) {
+            case IFlashLight.CLOSE:
+                mCameraLightBtn.setImageResource(R.drawable.ic_camera_close_light);
+                break;
+            case IFlashLight.OPEN:
+                mCameraLightBtn.setImageResource(R.drawable.ic_camera_open_light);
+                break;
+            case IFlashLight.AUTO:
+                mCameraLightBtn.setImageResource(R.drawable.ic_camera_auto_light);
+                break;
+            case IFlashLight.FILL:
+                mCameraLightBtn.setImageResource(R.drawable.ic_camera_fill_light);
+                break;
+        }
     }
 
     /**
      * 隐藏底部布局
      */
-    public void hideBottomView(boolean anim) {
-        if (mBottomView != null) {
+    public void hidePanel(boolean anim) {
+        hideTopPanel(anim, 100);
+        hideBottomPanel(anim, 100);
+    }
+
+    /**
+     * 隐藏底部布局
+     */
+    public void hideTopPanel(boolean anim, int duration) {
+        if (mTopPanel != null) {
             if (anim) {
-                mBottomView.animate().alpha(0).setDuration(100).setListener(new Animator.AnimatorListener() {
+                mTopPanel.animate().alpha(0).setDuration(duration).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
 
@@ -290,7 +309,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        mBottomView.setVisibility(View.GONE);
+                        mTopPanel.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -304,7 +323,40 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
                     }
                 });
             } else {
-                mBottomView.setVisibility(View.GONE);
+                mTopPanel.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
+     * 隐藏底部布局
+     */
+    public void hideBottomPanel(boolean anim, int duration) {
+        if (mBottomPanel != null) {
+            if (anim) {
+                mBottomPanel.animate().alpha(0).setDuration(duration).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mBottomPanel.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+            } else {
+                mBottomPanel.setVisibility(View.GONE);
             }
         }
     }
@@ -347,5 +399,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     @Override
     public void onSwitchCamera(boolean front) {
         mFillLightTv.setVisibility(front ? View.GONE : View.VISIBLE);
+        setCameraLightBtnStyle();
+        setCameraLightItemStyle();
     }
 }

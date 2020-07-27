@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/light_state"
         style="@style/CameraFlashLight"
-        android:src="@drawable/ic_camera_close_light" />
+        android:src="@drawable/ic_camera_open_light" />
 
     <TextView
         android:id="@+id/close_light"
