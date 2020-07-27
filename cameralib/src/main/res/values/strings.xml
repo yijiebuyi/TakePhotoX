@@ -8,4 +8,8 @@
     <string name="close_camera_light">关闭</string>
     <string name="auto_camera_light">自动</string>
     <string name="fill_camera_light">补光</string>
+
+    <string name="standard_size">标准</string>
+    <string name="fullscreen_size">全屏</string>
+    <string name="square_size">方形</string>
 </resources>

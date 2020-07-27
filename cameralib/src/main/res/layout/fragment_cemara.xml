@@ -85,5 +85,10 @@
             android:visibility="gone"
             layout="@layout/layout_camera_light"/>
 
+        <include
+            android:id="@+id/camera_size"
+            android:visibility="gone"
+            layout="@layout/layout_camera_size"/>
+
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -177,6 +177,9 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         switch (asRatio) {
             case ExAspectRatio.RATIO_16_9:
                 height = (int) (width * 16 / 9.0F);
+                if (height  > bottomPanelOffset) {
+                    params.topMargin = bottomPanelOffset - height;
+                }
                 setLayoutParams(params);
                 break;
             case ExAspectRatio.RATIO_4_3:

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.Fragment;
+import androidx.viewbinding.ViewBinding;
 
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.CameraView;
@@ -22,6 +23,8 @@ import com.camerax.lib.core.OnCameraFaceListener;
 import com.camerax.lib.core.OnCameraListener;
 import com.camerax.lib.core.OnFocusListener;
 import com.camerax.lib.core.OnImgAnalysisListener;
+import com.camerax.lib.core.SimpleAnimListener;
+import com.camerax.lib.databinding.FragmentCemaraBinding;
 
 /**
  * Copyright (C) 2017
@@ -47,6 +50,9 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     public final static String KEY_CAMERA_OPTION = "key_camera_option";
 
     private CameraView mCameraView;
+
+    //暂不支持include
+    //private ViewBinding mViewBinding;
 
     /**
      * top view
@@ -80,11 +86,15 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_cemara, null);
+        //mViewBinding = FragmentCemaraBinding.inflate(getLayoutInflater());
+        //View view = mViewBinding.getRoot();
+
         mCameraView = view.findViewById(R.id.preview_view);
         mCameraView.setOnFocusListener(this);
         mCameraView.setOnCameraListener(this);
         mCameraView.setOnImgAnalysisListener(this);
         mCameraView.setOnCameraFaceListener(this);
+
         return view;
     }
 
@@ -192,11 +202,19 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         } else if (vid == R.id.fill_light) {
             mCameraView.fillLight();
             hideLightLayout();
+        } else if (vid == R.id.size_state) {
+
+        } else if (vid == R.id.standard_size) {
+
+        } else if (vid == R.id.fullscreen_size) {
+
+        } else if (vid == R.id.square_size) {
+
         }
     }
 
     private void showLightLayout() {
-        mCameraLightLayout.animate().alpha(1).setDuration(200).setListener(new Animator.AnimatorListener() {
+        mCameraLightLayout.animate().alpha(1).setDuration(200).setListener(new SimpleAnimListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mCameraLightBtn.setAlpha(0.f);
@@ -207,27 +225,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
                 mCameraLightLayout.setVisibility(View.VISIBLE);
                 mCameraLightBtn.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
         }).start();
 
         setCameraLightItemStyle();
     }
 
     private void hideLightLayout() {
-        mCameraLightLayout.animate().alpha(0).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
+        mCameraLightLayout.animate().alpha(0).setListener(new SimpleAnimListener() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -237,15 +241,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
                 setCameraLightBtnStyle();
             }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
         }).setDuration(200).start();
     }
 
@@ -301,25 +296,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     public void hideTopPanel(boolean anim, int duration) {
         if (mTopPanel != null) {
             if (anim) {
-                mTopPanel.animate().alpha(0).setDuration(duration).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
+                mTopPanel.animate().alpha(0).setDuration(duration).setListener(new SimpleAnimListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mTopPanel.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
             } else {
@@ -334,25 +314,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     public void hideBottomPanel(boolean anim, int duration) {
         if (mBottomPanel != null) {
             if (anim) {
-                mBottomPanel.animate().alpha(0).setDuration(duration).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
+                mBottomPanel.animate().alpha(0).setDuration(duration).setListener(new SimpleAnimListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mBottomPanel.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
             } else {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/size_state"
+        style="@style/CameraPreviewSize"
+        android:src="@drawable/ic_camera_size_switcher" />
+
+    <TextView
+        android:id="@+id/standard_size"
+        style="@style/CameraPreviewSize"
+        android:text="@string/standard_size"/>
+
+    <TextView
+        android:id="@+id/fullscreen_size"
+        style="@style/CameraPreviewSize"
+        android:text="@string/fullscreen_size" />
+
+    <TextView
+        android:id="@+id/square_size"
+        style="@style/CameraPreviewSize"
+        android:text="@string/square_size" />
+
+</LinearLayout>
