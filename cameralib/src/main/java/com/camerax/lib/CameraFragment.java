@@ -415,8 +415,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     }
 
     @Override
-    public void onStartFocus(float x, float y) {
-        mFocusImageView.startFocus(x, y);
+    public void onStartFocus(float x, float y, float rawX, float rawY) {
+        mFocusImageView.startFocus(x, y, rawX, rawY);
     }
 
     @Override

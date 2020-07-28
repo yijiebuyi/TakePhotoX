@@ -53,8 +53,8 @@ public class CameraXActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         final CameraFragment cfg = new CameraFragment();
 
-        CameraOption option = new CameraOption.Builder(ExAspectRatio.RATIO_4_3)
-                .faceFront(true)
+        CameraOption option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
+                .faceFront(false)
                 .build();
 
         Bundle data = new Bundle();

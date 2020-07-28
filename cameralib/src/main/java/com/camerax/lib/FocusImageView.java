@@ -68,7 +68,7 @@ public class FocusImageView extends AppCompatImageView {
     /**
      * 显示对焦图案
      */
-    public void startFocus(float x, float y) {
+    public void startFocus(float x, float y, float rawX, float rawY) {
         if (mFocusImg == NO_ID) {
             throw new RuntimeException("focus image is null");
         }
@@ -77,8 +77,8 @@ public class FocusImageView extends AppCompatImageView {
 
         params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
         params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
-        params.topMargin = (int) y - getMeasuredHeight() / 2;
-        params.leftMargin = (int) x - getMeasuredWidth() / 2;
+        params.topMargin = (int) rawY - getMeasuredHeight() / 2;
+        params.leftMargin = (int) rawX - getMeasuredWidth() / 2;
 
         setLayoutParams(params);
         //设置控件可见，并开始动画

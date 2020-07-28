@@ -15,7 +15,7 @@ package com.camerax.lib.core;
  */
 
 public interface OnFocusListener {
-    public void onStartFocus(float x, float y);
+    public void onStartFocus(float x, float y, float rawX, float rawY);
 
     public void onEndFocus(boolean succ);
 }

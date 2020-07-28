@@ -77,7 +77,7 @@ public class CameraPreview extends PreviewView {
     }
 
     public interface CameraGestureListener {
-        void onClick(float x, float y);
+        void onClick(float x, float y, float rawX, float rawY);
 
         void onZoom(float scale);
     }
@@ -148,7 +148,7 @@ public class CameraPreview extends PreviewView {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (mCameraGestureListener != null) {
-                mCameraGestureListener.onClick(e.getX(), e.getY());
+                mCameraGestureListener.onClick(e.getX(), e.getY(), e.getRawX(), e.getRawY());
             }
             return super.onSingleTapConfirmed(e);
         }

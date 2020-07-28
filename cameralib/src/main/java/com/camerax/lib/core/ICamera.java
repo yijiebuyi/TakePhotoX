@@ -23,7 +23,7 @@ interface ICamera {
     /**
      * 对焦
      */
-    public void focus(float x, float y);
+    public void focus(float x, float y, float rawX, float rawY);
 
     /**
      * 切换前置后置

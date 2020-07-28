@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 
@@ -37,6 +38,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,7 +56,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CameraView extends CameraPreview implements ICamera, IFlashLight,
-        CameraPreview.CameraGestureListener, CameraXConfig.Provider{
+        CameraPreview.CameraGestureListener, CameraXConfig.Provider {
     private final static String TAG = "CameraView";
 
     /**
@@ -90,6 +92,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     private int SCREEN_WIDTH = 0;
     private int SCREEN_HEIGHT = 0;
+    private Executor mIoExecutor;
 
     private Context mContext;
 
@@ -115,6 +118,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     /**
      * 初始化
+     *
      * @param context
      * @param attrs
      */
@@ -177,7 +181,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         switch (asRatio) {
             case ExAspectRatio.RATIO_16_9:
                 height = (int) (width * 16 / 9.0F);
-                if (height  > bottomPanelOffset) {
+                if (height > bottomPanelOffset) {
                     params.topMargin = bottomPanelOffset - height;
                 }
                 setLayoutParams(params);
@@ -185,7 +189,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
             case ExAspectRatio.RATIO_4_3:
                 height = (int) (width * 4 / 3.0F);
                 params.topMargin = (SCREEN_HEIGHT - height) / 2;
-                if (params.topMargin + height  > bottomPanelOffset) {
+                if (params.topMargin + height > bottomPanelOffset) {
                     params.topMargin = bottomPanelOffset - height;
                 }
                 break;
@@ -203,6 +207,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     /**
      * 设置参数
+     *
      * @param option
      */
     private void setOption(CameraOption option) {
@@ -255,14 +260,25 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         // 构建图像捕获用例
         // 暂时cameraX outImage 不支持1：1
         int ratio = mCameraParam.asRatio;
+        boolean squareImg = false;
         if (ratio == ExAspectRatio.RATIO_1_1) {
-            ratio = ExAspectRatio.RATIO_4_3;
+            squareImg = true;
+            //ratio = ExAspectRatio.RATIO_16_9;
         }
-        mImageCapture = new ImageCapture.Builder()
-                .setFlashMode(ImageCapture.FLASH_MODE_OFF)
-                .setTargetAspectRatio(ratio)
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .build();
+
+        if (squareImg) {
+            mImageCapture = new ImageCapture.Builder()
+                    .setFlashMode(ImageCapture.FLASH_MODE_OFF)
+                    .setTargetResolution(new Size(2000, 2000))
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .build();
+        } else {
+            mImageCapture = new ImageCapture.Builder()
+                    .setFlashMode(ImageCapture.FLASH_MODE_OFF)
+                    .setTargetAspectRatio(ratio)
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .build();
+        }
 
         // 旋转监听
         OrientationEventListener orientationEventListener = new OrientationEventListener(mContext) {
@@ -291,9 +307,16 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
      * 构建图像预览
      */
     private void initPreview() {
-        mPreview = new Preview.Builder()
-                .setTargetAspectRatio(mCameraParam.asRatio)
-                .build();
+        int ratio = mCameraParam.asRatio;
+        if (ratio == ExAspectRatio.RATIO_1_1) {
+            mPreview = new Preview.Builder()
+                    .setTargetResolution(new Size(SCREEN_WIDTH, SCREEN_WIDTH))
+                    .build();
+        } else {
+            mPreview = new Preview.Builder()
+                    .setTargetAspectRatio(ratio)
+                    .build();
+        }
     }
 
     /**
@@ -333,6 +356,14 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     @Override
     public void take() {
         final File file = !TextUtils.isEmpty(mOutFilePath) ? new File(mOutFilePath) : CameraUtil.getOutFile(mContext);
+        saveToFile(file);
+    }
+
+    /**
+     * 直接将图片保存到文件，由系统默认处理
+     * @param file
+     */
+    private void saveToFile(final File file) {
         ImageCapture.Metadata metadata = new ImageCapture.Metadata();
         metadata.setReversedHorizontal(mCameraParam.faceFront);
         ImageCapture.OutputFileOptions outputFileOptions =
@@ -341,10 +372,6 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        if (mCameraParam.asRatio == ExAspectRatio.RATIO_1_1) {
-                            CameraUtil.cropSquare(file, mCameraParam.faceFront);
-                        }
-
                         Uri result = outputFileResults.getSavedUri();
                         if (result == null) {
                             result = Uri.fromFile(file);
@@ -363,10 +390,48 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                 });
     }
 
+    /**
+     * 对返回的内存中的图片自定义处理（处理）
+     * @param file
+     */
+    private void saveToFileFromMemory(final File file) {
+        mImageCapture.takePicture(mExecutor, new ImageCapture.OnImageCapturedCallback() {
+            @Override
+            public void onCaptureSuccess(final @NonNull ImageProxy image) {
+                //super.onCaptureSuccess(image);
+                CameraImageSaver saver = new CameraImageSaver(image, file, 0,
+                        mCameraParam.faceFront, mExecutor, new CameraImageSaver.OnImageSavedListener() {
+                    @Override
+                    public void onImageSaved(@NonNull Uri outputFileResults) {
+                        if (mOnCameraListener != null) {
+                            mOnCameraListener.onTaken(Uri.fromFile(file));
+                        }
+                        image.close();
+                    }
+
+                    @Override
+                    public void onError(int saveError, String message, @Nullable Throwable cause) {
+
+                    }
+                });
+
+                if (mIoExecutor == null) {
+                    mIoExecutor = Executors.newSingleThreadExecutor();
+                }
+                mIoExecutor.execute(saver);
+            }
+
+            @Override
+            public void onError(@NonNull ImageCaptureException exception) {
+                super.onError(exception);
+            }
+        });
+    }
+
     @Override
-    public void focus(float x, float y) {
+    public void focus(float x, float y, float rawX, float rawY) {
         if (mOnFocusListener != null) {
-            mOnFocusListener.onStartFocus(x, y);
+            mOnFocusListener.onStartFocus(x , y, rawX, rawY);
         }
 
         MeteringPointFactory factory = createMeteringPointFactory(mCameraSelector);
@@ -479,8 +544,8 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     }
 
     @Override
-    public void onClick(float x, float y) {
-        focus(x, y);
+    public void onClick(float x, float y, float rawX, float rawY) {
+        focus(x, y, rawX, rawY);
     }
 
     @Override
