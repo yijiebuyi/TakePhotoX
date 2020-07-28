@@ -103,4 +103,6 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
 
 - 后续添加系统默的拍照
 
-
+# Demo下载
+https://www.pgyer.com/53su
+安装密码：123456
