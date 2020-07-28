@@ -55,9 +55,12 @@ mCameraView.setOnImgAnalysisListener(l);
 //设置前后摄像头切换回调
 mCameraView.setOnCameraFaceListener(l);
 
-```java
+```
+
+
 
 - 也可以使用CameraFragment，使用默认的提供的ui效果
+```java
    FragmentManager fm = getSupportFragmentManager();
    FragmentTransaction ft = fm.beginTransaction();
    final CameraFragment cfg = new CameraFragment();
@@ -95,4 +98,6 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
             Uri uri = data.getData();
         }
     }
+```
+
 
