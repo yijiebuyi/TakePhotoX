@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.camerax.lib.CameraUtil;
+import com.camerax.lib.R;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
@@ -385,7 +387,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         Log.e(TAG, exception.getMessage());
-                        //Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.take_photo_fail, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -411,7 +413,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
                     @Override
                     public void onError(int saveError, String message, @Nullable Throwable cause) {
-
+                        Toast.makeText(mContext, R.string.take_photo_fail, Toast.LENGTH_SHORT).show();
                     }
                 });
 

@@ -17,8 +17,10 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 /**
@@ -80,7 +82,12 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
         Bundle data = getArguments();
         if (data != null) {
             mPhotoUri = data.getParcelable(KEY_PHOTO_URI);
-            Glide.with(mContext).load(mPhotoUri).addListener(new RequestListener<Drawable>() {
+            Glide.with(mContext)
+                    .load(mPhotoUri)
+                    .apply(new RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .addListener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                     if (mOnPhotoListener != null) {
