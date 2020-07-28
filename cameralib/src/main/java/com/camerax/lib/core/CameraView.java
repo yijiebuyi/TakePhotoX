@@ -253,9 +253,14 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
      */
     private void initImageCapture() {
         // 构建图像捕获用例
+        // 暂时cameraX outImage 不支持1：1
+        int ratio = mCameraParam.asRatio;
+        if (ratio == ExAspectRatio.RATIO_1_1) {
+            ratio = ExAspectRatio.RATIO_4_3;
+        }
         mImageCapture = new ImageCapture.Builder()
                 .setFlashMode(ImageCapture.FLASH_MODE_OFF)
-                .setTargetAspectRatio(mCameraParam.asRatio)
+                .setTargetAspectRatio(ratio)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .build();
 
@@ -336,6 +341,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        if (mCameraParam.asRatio == ExAspectRatio.RATIO_1_1) {
+                            CameraUtil.cropSquare(file, mCameraParam.faceFront);
+                        }
+
                         Uri result = outputFileResults.getSavedUri();
                         if (result == null) {
                             result = Uri.fromFile(file);

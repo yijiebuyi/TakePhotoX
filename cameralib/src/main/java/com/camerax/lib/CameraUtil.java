@@ -1,12 +1,26 @@
 package com.camerax.lib;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Environment;
+import android.util.Log;
 import android.util.Size;
 
 import com.camerax.lib.core.ExAspectRatio;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Copyright (C) 2017
@@ -46,6 +60,80 @@ public class CameraUtil {
         }
 
         return size;
+    }
+
+    public static Bitmap getBitmap(InputStream in) {
+        Bitmap image = null;
+        try {
+            image = BitmapFactory.decodeStream(in);
+        } catch (OutOfMemoryError err) {
+
+            err.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+        return image;
+    }
+
+    public static File cropSquare(File file, boolean mirror) {
+        File temp = file;
+        try {
+            long s = System.currentTimeMillis();
+            Bitmap srcBitmap = getBitmap(new FileInputStream(file));
+            Log.i("aaa", "===gb===" + (System.currentTimeMillis() - s));
+            int w = srcBitmap.getWidth();
+            int h = srcBitmap.getHeight();
+            if (w == h) {
+                return file;
+            }
+
+            int size = Math.min(w, h);
+            
+            int offsetX = (w - size) / 2;
+            int offsetY = (h - size) / 2;
+
+            Bitmap target = null;
+            if (mirror) {
+                Matrix m = new Matrix();
+                m.postScale(-1, 1);   //镜像水平翻转
+                target = Bitmap.createBitmap(srcBitmap, offsetX, offsetY, size, size, m, true);
+            } else {
+                target = Bitmap.createBitmap(srcBitmap, offsetX, offsetY, size, size);
+            }
+            Log.i("aaa", "===cb===" + (System.currentTimeMillis() - s));
+
+            temp = new File(file.getAbsoluteFile() + ".temp");
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+            target.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            temp.renameTo(file);
+
+            if (srcBitmap != null && !srcBitmap.isRecycled()) {
+                srcBitmap.recycle();
+            }
+            if (target != null && !target.isRecycled()) {
+                target.recycle();
+            }
+            Log.i("aaa", "===cf===" + (System.currentTimeMillis() - s));
+        } catch (FileNotFoundException e) {
+
+        }
+
+        return file;
+    }
+
+    private static Bitmap.Config getConfig(Bitmap bitmap) {
+        Bitmap.Config config = bitmap.getConfig();
+        if (config == null) {
+            config = Bitmap.Config.ARGB_8888;
+        }
+        return config;
     }
 
     /**
