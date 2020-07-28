@@ -21,15 +21,20 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main"
-        android:visibility="visible"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <Button
+        android:id="@+id/take_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="40dp"
+        android:padding="20dp"
+        android:text="拍照"/>
+
+   <TextView
+       android:id="@+id/photo_path"
+       android:padding="10dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="160dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
