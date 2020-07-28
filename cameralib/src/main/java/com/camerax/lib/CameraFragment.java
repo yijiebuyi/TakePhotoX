@@ -174,7 +174,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     private CameraOption initOption() {
         Bundle data = getArguments();
 
-        boolean hideBottomCtrl = data != null && !data.getBoolean(KEY_SHOW_BOTTOM_CONTROLLER);
+        boolean hideBottomCtrl = data != null && !data.getBoolean(KEY_SHOW_BOTTOM_CONTROLLER, true);
         CameraOption option = null;
         Object obj = null;
         if (data != null && (obj = data.getSerializable(KEY_CAMERA_OPTION)) != null) {

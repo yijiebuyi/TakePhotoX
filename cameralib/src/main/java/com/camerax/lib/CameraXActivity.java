@@ -58,7 +58,6 @@ public class CameraXActivity extends AppCompatActivity {
                 .build();
 
         Bundle data = new Bundle();
-        data.putBoolean(CameraFragment.KEY_SHOW_BOTTOM_CONTROLLER, true);
         data.putSerializable(CameraFragment.KEY_CAMERA_OPTION, option);
         cfg.setArguments(data);
         cfg.setOnCameraListener(new OnCameraListener() {
