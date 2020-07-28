@@ -84,9 +84,10 @@ mCameraView.setOnCameraFaceListener(l);
            finish();
        }
    });
+```
 
 - 直接使用CameraXActivity
-
+```java
 startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 1000);
 
 @Override
@@ -99,5 +100,8 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
         }
     }
 ```
+
+
+- 后续添加系统默的拍照
 
 
