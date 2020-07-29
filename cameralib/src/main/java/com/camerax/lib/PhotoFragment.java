@@ -60,7 +60,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_photo, null);
+        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_photox, null);
     }
 
     @Override

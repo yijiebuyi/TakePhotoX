@@ -44,7 +44,11 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     /**
      * 是否显示底部控制器
      */
-    public final static String KEY_SHOW_BOTTOM_CONTROLLER = "key_show_bottom_controller";
+    public final static String KEY_SHOW_BOTTOM_PANEL = "key_show_bottom_panel";
+    /**
+     * 是否显示顶部控制器
+     */
+    public final static String KEY_SHOW_TOP_PANEL = "key_show_top_panel";
     public final static String KEY_CAMERA_OPTION = "key_camera_option";
 
     private CameraView mCameraView;
@@ -81,9 +85,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     private FocusImageView mFocusImageView;
 
     /**
+     * 是否隐藏顶部控制器
+     */
+    private boolean mHideTopPanel;
+    /**
      * 是否隐藏底部控制器
      */
-    private boolean mHideBottomController;
+    private boolean mHideBottomPanel;
 
     private OnCameraListener mOnCameraWrapListener;
     private OnImgAnalysisListener mOnImgAnalysisWrapListener;
@@ -91,7 +99,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_cemara, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_cemarax, null);
         //mViewBinding = FragmentCemaraBinding.inflate(getLayoutInflater());
         //View view = mViewBinding.getRoot();
 
@@ -111,21 +119,23 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         CameraOption option = initOption();
         mCameraView.initCamera(option, this);
 
-        initView(view);
+        initView(view, option);
     }
 
-    private void initView(View view) {
+    private void initView(View view, CameraOption option) {
+        if (!option.isAnalysisImg()) {
+            mFocusImageView = view.findViewById(R.id.focus_view);
+        }
+
         //bottom panel
         mBottomPanel = view.findViewById(R.id.bottom_panel);
-
-        if (mHideBottomController) {
+        if (mHideBottomPanel) {
             mBottomPanel.setVisibility(View.GONE);
         } else {
             mBottomPanel.setVisibility(View.VISIBLE);
             mTakePhotoBtn = view.findViewById(R.id.take_photo);
             mCancelBtn = view.findViewById(R.id.cancel);
             mSwitchCameraBtn = view.findViewById(R.id.switch_camera);
-            mFocusImageView = view.findViewById(R.id.focus_view);
 
             mTakePhotoBtn.setOnClickListener(this);
             mCancelBtn.setOnClickListener(this);
@@ -134,47 +144,56 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
 
         //top panel
         mTopPanel = view.findViewById(R.id.top_panel);
-        mCameraFuncLayout = view.findViewById(R.id.camera_func_layout);
+        if (mHideTopPanel) {
+            mTopPanel.setVisibility(View.GONE);
+        } else {
+            mTopPanel.setVisibility(View.VISIBLE);
 
-        //flash light
-        mCameraLightBtn = view.findViewById(R.id.camera_light_btn);
-        mCameraLightLayout = view.findViewById(R.id.camera_light);
+            mCameraFuncLayout = view.findViewById(R.id.camera_func_layout);
 
-        mCameraLightBtn.setOnClickListener(this);
+            //flash light
+            mCameraLightBtn = view.findViewById(R.id.camera_light_btn);
+            mCameraLightLayout = view.findViewById(R.id.camera_light);
 
-        view.findViewById(R.id.light_state).setOnClickListener(this);
-        mAutoLightTv = view.findViewById(R.id.auto_light);
-        mOpenLightTv = view.findViewById(R.id.open_light);
-        mCloseLightTv = view.findViewById(R.id.close_light);
-        mFillLightTv = view.findViewById(R.id.fill_light);
+            mCameraLightBtn.setOnClickListener(this);
 
-        mAutoLightTv.setOnClickListener(this);
-        mOpenLightTv.setOnClickListener(this);
-        mCloseLightTv.setOnClickListener(this);
-        mFillLightTv.setOnClickListener(this);
+            view.findViewById(R.id.light_state).setOnClickListener(this);
+            mAutoLightTv = view.findViewById(R.id.auto_light);
+            mOpenLightTv = view.findViewById(R.id.open_light);
+            mCloseLightTv = view.findViewById(R.id.close_light);
+            mFillLightTv = view.findViewById(R.id.fill_light);
 
-        mFillLightTv.setVisibility(mCameraView.getCameraParam().faceFront ? View.GONE : View.VISIBLE);
+            mAutoLightTv.setOnClickListener(this);
+            mOpenLightTv.setOnClickListener(this);
+            mCloseLightTv.setOnClickListener(this);
+            mFillLightTv.setOnClickListener(this);
 
-        //camera size
-        mCameraSizeBtn = view.findViewById(R.id.camera_size_btn);
-        mCameraSizeLayout = view.findViewById(R.id.camera_size);
+            mFillLightTv.setVisibility(mCameraView.getCameraParam().faceFront ? View.GONE : View.VISIBLE);
 
-        mCameraSizeBtn.setOnClickListener(this);
+            //camera size
+            mCameraSizeBtn = view.findViewById(R.id.camera_size_btn);
+            mCameraSizeLayout = view.findViewById(R.id.camera_size);
 
-        view.findViewById(R.id.size_state).setOnClickListener(this);
-        mStandardSizeTv = view.findViewById(R.id.standard_size);
-        mFullscreenSizeTv = view.findViewById(R.id.fullscreen_size);
-        mSquareSizeTv = view.findViewById(R.id.square_size);
+            mCameraSizeBtn.setOnClickListener(this);
 
-        mStandardSizeTv.setOnClickListener(this);
-        mFullscreenSizeTv.setOnClickListener(this);
-        mSquareSizeTv.setOnClickListener(this);
+            view.findViewById(R.id.size_state).setOnClickListener(this);
+            mStandardSizeTv = view.findViewById(R.id.standard_size);
+            mFullscreenSizeTv = view.findViewById(R.id.fullscreen_size);
+            mSquareSizeTv = view.findViewById(R.id.square_size);
+
+            mStandardSizeTv.setOnClickListener(this);
+            mFullscreenSizeTv.setOnClickListener(this);
+            mSquareSizeTv.setOnClickListener(this);
+        }
+
     }
 
     private CameraOption initOption() {
         Bundle data = getArguments();
 
-        boolean hideBottomCtrl = data != null && !data.getBoolean(KEY_SHOW_BOTTOM_CONTROLLER, true);
+        boolean hideBottomCtrl = data != null && !data.getBoolean(KEY_SHOW_BOTTOM_PANEL, true);
+        boolean hideTopCtrl = data != null && !data.getBoolean(KEY_SHOW_TOP_PANEL, true);
+
         CameraOption option = null;
         Object obj = null;
         if (data != null && (obj = data.getSerializable(KEY_CAMERA_OPTION)) != null) {
@@ -184,7 +203,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
                     .build();
         }
 
-        mHideBottomController = option.isAnalysisImg() || hideBottomCtrl;
+        mHideBottomPanel = option.isAnalysisImg() || hideBottomCtrl;
+        mHideTopPanel = option.isAnalysisImg() || hideTopCtrl;
 
         return option;
     }
@@ -416,11 +436,19 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
 
     @Override
     public void onStartFocus(float x, float y, float rawX, float rawY) {
+        if (mFocusImageView == null) {
+            return;
+        }
+
         mFocusImageView.startFocus(x, y, rawX, rawY);
     }
 
     @Override
     public void onEndFocus(boolean succ) {
+        if (mFocusImageView == null) {
+            return;
+        }
+
         if (succ) {
             mFocusImageView.onFocusFailed();
         } else {

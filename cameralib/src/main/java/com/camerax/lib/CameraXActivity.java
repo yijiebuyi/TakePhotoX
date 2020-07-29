@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,7 +44,7 @@ public class CameraXActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_camerax);
         requestPermission();
     }
 
@@ -56,6 +55,7 @@ public class CameraXActivity extends AppCompatActivity {
 
         CameraOption option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
                 //.outPath(Environment.getExternalStorageDirectory() + "/AAAA.JPEG")
+                .analysisImg(false)
                 .faceFront(false)
                 .build();
 
