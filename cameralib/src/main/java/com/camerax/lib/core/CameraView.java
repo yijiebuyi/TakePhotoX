@@ -43,6 +43,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 /**
  * Copyright (C) 2017
  * 版权所有
@@ -170,7 +172,14 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         reset();
     }
 
+    /**
+     * 设置预览比例以及布局大小
+     * @param asRatio
+     */
     private void setPreviewAspect(@ExAspectRatio.ExRatio int asRatio) {
+        //是否是竖屏
+        boolean isPortrait = mContext.getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT;
+
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) getLayoutParams();
         params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
         params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
@@ -180,26 +189,38 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
         int width = SCREEN_WIDTH;
         int height = SCREEN_HEIGHT;
-        switch (asRatio) {
-            case ExAspectRatio.RATIO_16_9:
-                height = (int) (width * 16 / 9.0F);
-                if (height > bottomPanelOffset) {
-                    params.topMargin = bottomPanelOffset - height;
-                }
-                setLayoutParams(params);
-                break;
-            case ExAspectRatio.RATIO_4_3:
-                height = (int) (width * 4 / 3.0F);
-                params.topMargin = (SCREEN_HEIGHT - height) / 2;
-                if (params.topMargin + height > bottomPanelOffset) {
-                    params.topMargin = bottomPanelOffset - height;
-                }
-                break;
-            case ExAspectRatio.RATIO_1_1:
-                height = width;
-                params.topMargin = (SCREEN_HEIGHT - width) / 2;
-                setLayoutParams(params);
-                break;
+
+        if (isPortrait) {
+            switch (asRatio) {
+                case ExAspectRatio.RATIO_16_9:
+                    height = (int) (width * 16 / 9.0F);
+                    break;
+                case ExAspectRatio.RATIO_4_3:
+                    height = (int) (width * 4 / 3.0F);
+                    break;
+                case ExAspectRatio.RATIO_1_1:
+                    height = width = SCREEN_WIDTH;
+                    break;
+            }
+
+            params.topMargin = (SCREEN_HEIGHT - height) / 2;
+            if (params.topMargin + height > bottomPanelOffset) {
+                params.topMargin = bottomPanelOffset - height;
+            }
+        } else {
+            switch (asRatio) {
+                case ExAspectRatio.RATIO_16_9:
+                    width = (int) (height * 16 / 9.0F);
+                    break;
+                case ExAspectRatio.RATIO_4_3:
+                    width = (int) (height * 4 / 3.0F);
+                    break;
+                case ExAspectRatio.RATIO_1_1:
+                    height = width = SCREEN_HEIGHT;
+                    break;
+            }
+
+            params.leftMargin = (SCREEN_WIDTH - width) / 2;
         }
 
         params.width = width;
