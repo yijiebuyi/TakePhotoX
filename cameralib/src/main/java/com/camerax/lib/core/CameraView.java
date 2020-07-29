@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -180,15 +181,13 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         //是否是竖屏
         boolean isPortrait = mContext.getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT;
 
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) getLayoutParams();
-        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-        params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
-
         int bottomPanelHeight = CameraUtil.dip2px(mContext, 90);
         int bottomPanelOffset = SCREEN_HEIGHT - bottomPanelHeight;
 
         int width = SCREEN_WIDTH;
         int height = SCREEN_HEIGHT;
+        int topMargin = 0;
+        int leftMargin = 0;
 
         if (isPortrait) {
             switch (asRatio) {
@@ -203,9 +202,9 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                     break;
             }
 
-            params.topMargin = (SCREEN_HEIGHT - height) / 2;
-            if (params.topMargin + height > bottomPanelOffset) {
-                params.topMargin = bottomPanelOffset - height;
+            topMargin = (SCREEN_HEIGHT - height) / 2;
+            if (topMargin + height > bottomPanelOffset) {
+                topMargin = bottomPanelOffset - height;
             }
         } else {
             switch (asRatio) {
@@ -220,11 +219,26 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                     break;
             }
 
-            params.leftMargin = (SCREEN_WIDTH - width) / 2;
+            leftMargin = (SCREEN_WIDTH - width) / 2;
         }
+
+        setLayoutParams(width, height, leftMargin, topMargin);
+    }
+
+    protected void setLayoutParams(int width, int height, int leftMargin, int topMargin) {
+        ViewGroup.LayoutParams params =  getLayoutParams();
 
         params.width = width;
         params.height = height;
+
+        if (params instanceof ConstraintLayout.LayoutParams) {
+            ConstraintLayout.LayoutParams conParams = (ConstraintLayout.LayoutParams)params;
+            conParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+            conParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+            conParams.topMargin = topMargin;
+            conParams.leftMargin = leftMargin;
+        }
+
         setLayoutParams(params);
     }
 

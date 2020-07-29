@@ -40,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 1000);
             }
         });
+
+        findViewById(R.id.qrcode_scan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(MainActivity.this, QrCodeActivity.class), 1000);
+            }
+        });
     }
 
     @Override
