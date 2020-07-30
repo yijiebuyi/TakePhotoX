@@ -5,6 +5,13 @@
 
     <dist:module dist:instant="true" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,7 +32,10 @@
 
         <activity
             android:name=".QrCodeActivity"
+            android:theme="@style/NoTitleTheme"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".CameraViewActivity"/>
 
         <!-- FileProvider文件共享 -->
         <provider

@@ -27,6 +27,7 @@ import android.graphics.Region;
 import android.graphics.RegionIterator;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Size;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -69,6 +70,7 @@ public final class ScannerView extends View {
     private Context mContext;
     private Paint mPaint;
     private Bitmap mScanLight;
+    private Size mSize;
 
 
     public ScannerView(Context context) {
@@ -121,6 +123,7 @@ public final class ScannerView extends View {
         Log.i("aaa", "*W=" + getWidth() + "  h=" + getHeight());
         mWidth = getWidth();
         mHeight = getHeight();
+        mSize = new Size(mWidth, mHeight );
 
         int frameWidth = 0;
         int frameHeight = 0;
@@ -271,5 +274,13 @@ public final class ScannerView extends View {
      */
     public Rect getScanRect() {
         return mFrameRect;
+    }
+
+    public Size getPreviewSize() {
+        if (mSize == null) {
+            mSize = new Size(mWidth, mHeight );
+        }
+
+        return mSize;
     }
 }

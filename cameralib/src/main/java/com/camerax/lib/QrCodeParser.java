@@ -1,11 +1,13 @@
 package com.camerax.lib;
 
+import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Size;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 /**
  * Copyright (C) 2017
  * 版权所有
@@ -48,7 +52,7 @@ import java.util.concurrent.Executors;
 public class QrCodeParser {
     private final static String TAG = "QrScanParser";
     private QRCallback mQRCallback;
-    private final static int TIME_OUT = 3000 * 1000;
+    private final static int TIME_OUT = 120 * 1000;
 
     public void setQRCallback(QRCallback callback) {
         mQRCallback = callback;
@@ -60,18 +64,29 @@ public class QrCodeParser {
      * @param image
      * @return
      */
-    public void start(final ImageProxy image, final long elapseTime, final Rect rect) {
+    public void start(final ImageProxy image, final long elapseTime) {
+       start(image, elapseTime, 0, null, null);
+    }
+
+    /**
+     * 识别二维码
+     *
+     * @param image
+     * @return
+     */
+    public void start(final ImageProxy image, final long elapseTime, int scrOri, Rect scanRect, Size previewSize) {
         /*if(true) {
             String qrText = execute(image, elapseTime);
             checkNextFrame(qrText, image, elapseTime);
             return;
         }*/
 
+        final Rect analysisRect = getImageAnalysisRect(scrOri, image, scanRect, previewSize);
         ThreadPool.getInstance().submit(new ThreadPool.Job<String>() {
             @Override
             public String run(ThreadPool.JobContext jc) {
-                String qrText = execute(image, rect, elapseTime);
-                //saveImg(image);
+                String qrText = execute(image, analysisRect, elapseTime);
+                saveImg(image);
                 return qrText;
             }
         }, new FutureListener<String>() {
@@ -98,7 +113,7 @@ public class QrCodeParser {
         }
     }
 
-    private String execute(ImageProxy image, Rect rect, long elapseTime) {
+    private String execute(ImageProxy image, Rect analysisRect, long elapseTime) {
         if ((image.getFormat() == ImageFormat.YUV_420_888
                 || image.getFormat() == ImageFormat.YUV_422_888
                 || image.getFormat() == ImageFormat.YUV_444_888)
@@ -108,7 +123,29 @@ public class QrCodeParser {
             byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
 
-            PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(data, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(), image.getHeight(), false);
+
+            byte[] destData = new byte[image.getPlanes()[0].getBuffer().remaining()];
+            int width = image.getWidth();
+            int height = image.getHeight();
+            /*for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    destData[x * height + height - y - 1] = data[x + y * width];
+                }
+            }
+            int tmp = width;
+            width = height;
+            height = tmp;*/
+
+
+            PlanarYUVLuminanceSource source = null;
+            if (analysisRect == null) {
+                source = new PlanarYUVLuminanceSource(data, width, height,
+                        0, 0, image.getWidth(), image.getHeight(), false);
+            } else {
+                source = new PlanarYUVLuminanceSource(data, width, height,
+                        analysisRect.left, analysisRect.top, analysisRect.width(), analysisRect.height(), false);
+            }
+
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
             String qrText = "";
             try {
@@ -169,6 +206,36 @@ public class QrCodeParser {
         multiFormatReader.setHints(hints);
 
         return multiFormatReader;
+    }
+
+    private Rect getImageAnalysisRect(int scrOri, ImageProxy image, Rect scanRect, Size previewSize) {
+        if (scanRect == null || previewSize == null) {
+            return null;
+        }
+
+        //分别获取短边，求缩放比例
+        int imgMinEdge = Math.min(image.getWidth(), image.getHeight());
+        int previewMinEdge = Math.min(previewSize.getWidth(), previewSize.getHeight());
+
+
+        int degree = image.getImageInfo().getRotationDegrees();
+        if (degree % 180 != 0 && scrOri == ORIENTATION_PORTRAIT) {
+            float scale = imgMinEdge / (float)previewMinEdge;
+            int l = (int)(scanRect.top * scale);
+            int t = (int)(scanRect.left * scale);
+
+            int r = (int)(scanRect.bottom * scale);
+            int b = (int)(scanRect.right * scale);
+            return new Rect(l, t, r, b);
+        } else {
+            float scale = imgMinEdge / (float)previewMinEdge;
+            int l = (int)(scanRect.left * scale);
+            int t = (int)(scanRect.top * scale);
+
+            int r = (int)(scanRect.right * scale);
+            int b = (int)(scanRect.bottom * scale);
+            return new Rect(l, t, r, b);
+        }
     }
 
     private void saveImg(ImageProxy image) {

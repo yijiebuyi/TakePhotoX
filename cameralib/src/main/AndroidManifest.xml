@@ -13,8 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".CameraXActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/NotitleTheme"/>
+            android:theme="@style/NoTitleTheme"/>
 
     </application>
 </manifest>

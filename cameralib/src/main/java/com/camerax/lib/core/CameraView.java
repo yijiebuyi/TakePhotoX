@@ -145,6 +145,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     private OnImgAnalysisListener mOnImgAnalysisListener;
     private OnFocusListener mOnFocusListener;
     private OnCameraFaceListener mOnCameraFaceListener;
+    private OnPreviewLayoutListener mOnPreviewLayoutListener;
 
     public void setOnCameraListener(OnCameraListener listener) {
         mOnCameraListener = listener;
@@ -160,6 +161,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     public void setOnCameraFaceListener(OnCameraFaceListener listener) {
         mOnCameraFaceListener = listener;
+    }
+
+    public void setOnPreviewLayoutListener(OnPreviewLayoutListener listener) {
+        mOnPreviewLayoutListener = listener;
     }
 
     /**
@@ -222,11 +227,25 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
             leftMargin = (SCREEN_WIDTH - width) / 2;
         }
 
+        if (mOnPreviewLayoutListener != null) {
+            mOnPreviewLayoutListener.onLayoutSizeChange(width, height, leftMargin, topMargin);
+        }
+
         setLayoutParams(width, height, leftMargin, topMargin);
     }
 
+    /**
+     * 子类可以重新改方法重新布局，也可以设置 OnPreviewLayoutListener
+     * @param width
+     * @param height
+     * @param leftMargin
+     * @param topMargin
+     */
     protected void setLayoutParams(int width, int height, int leftMargin, int topMargin) {
         ViewGroup.LayoutParams params =  getLayoutParams();
+        if (params == null) {
+            return;
+        }
 
         params.width = width;
         params.height = height;
