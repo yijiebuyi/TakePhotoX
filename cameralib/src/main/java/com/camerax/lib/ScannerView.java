@@ -49,7 +49,7 @@ import androidx.annotation.NonNull;
 public final class ScannerView extends View {
     private static final long ANIMATION_DELAY = 16L;
     private ScannerFrameOption mOptions;
-    private int SCAN_VELOCITY = 5;
+    private int SCAN_VELOCITY = 6;
 
     private @ScannerFrameOption.FrameMode.Mode
     int mFrameMode = ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE;
@@ -261,8 +261,15 @@ public final class ScannerView extends View {
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
-    public static int dip2px(Context context, float dpValue) {
+    private static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 获取扫描区域
+     */
+    public Rect getScanRect() {
+        return mFrameRect;
     }
 }

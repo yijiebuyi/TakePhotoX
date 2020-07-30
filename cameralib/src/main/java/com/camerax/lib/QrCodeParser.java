@@ -1,11 +1,16 @@
 package com.camerax.lib;
 
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.camera.core.ImageProxy;
 
+import com.camerax.lib.util.Future;
+import com.camerax.lib.util.FutureListener;
+import com.camerax.lib.util.ThreadPool;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -36,7 +41,7 @@ import java.util.Vector;
 public class QrCodeParser {
     private final static String TAG = "QrScanParser";
     private QRCallback mQRCallback;
-    private final static int TIME_OUT = 30 * 1000;
+    private final static int TIME_OUT = 3000 * 1000;
 
     public void setQRCallback(QRCallback callback) {
         mQRCallback = callback;
@@ -47,13 +52,49 @@ public class QrCodeParser {
      * @param image
      * @return
      */
-    public void execute(ImageProxy image, long elapseTime) {
+    public void start(final ImageProxy image, final long elapseTime) {
+        /*if(true) {
+            String qrText = execute(image, elapseTime);
+            checkNextFrame(qrText, image, elapseTime);
+            return;
+        }*/
+
+        ThreadPool.getInstance().submit(new ThreadPool.Job<String>() {
+            @Override
+            public String run(ThreadPool.JobContext jc) {
+                String qrText = execute(image, elapseTime);
+                return qrText;
+            }
+        }, new FutureListener<String>() {
+            @Override
+            public void onFutureDone(Future<String> future) {
+                String qrText = future.get();
+                checkNextFrame(qrText, image, elapseTime);
+            }
+        });
+    }
+
+    private void checkNextFrame(String qrText, ImageProxy image, long elapseTime) {
+        if (TextUtils.isEmpty(qrText)) {
+            if (mQRCallback != null && elapseTime > TIME_OUT) {
+                mQRCallback.onFail();
+            } else {
+                //继续扫描下一张图片
+                image.close();
+            }
+        } else {
+            if (mQRCallback != null) {
+                mQRCallback.onSucc(qrText);
+            }
+        }
+    }
+
+    private String execute(ImageProxy image, long elapseTime) {
         if ((image.getFormat() == ImageFormat.YUV_420_888
                 || image.getFormat() == ImageFormat.YUV_422_888
                 || image.getFormat() == ImageFormat.YUV_444_888)
                 && image.getPlanes().length == 3) {
 
-            //Log.i("AAA", "=================");
             ByteBuffer buffer = image.getPlanes()[0].getBuffer();
             byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
@@ -71,20 +112,11 @@ public class QrCodeParser {
                 e.printStackTrace();
             }
 
-            if (TextUtils.isEmpty(qrText)) {
-                if (mQRCallback != null && elapseTime > TIME_OUT) {
-                    mQRCallback.onFail();
-                } else {
-                    //继续扫描下一张图片
-                    image.close();
-                }
-            } else {
-                if (mQRCallback != null) {
-                    mQRCallback.onSucc(qrText);
-                }
-            }
+            Log.i("aaa", "====qrText="+qrText);
+            return qrText;
         }
 
+        return "";
     }
 
     /**

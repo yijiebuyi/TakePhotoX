@@ -93,7 +93,7 @@ public class CameraXActivity extends AppCompatActivity {
                     });
                 }
 
-                mQrCodeParser.execute(image, elapseTime);
+                mQrCodeParser.start(image, elapseTime);
             }
         });
         ft.replace(R.id.container, cfg, CAMERA_FRAGMENT);
