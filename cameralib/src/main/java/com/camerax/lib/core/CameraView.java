@@ -277,9 +277,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
      * 图像分析
      */
     private void initImageAnalysis() {
+        //设置分辨率，某些机型无法识别
         mImageAnalysis = new ImageAnalysis.Builder()
                 // 分辨率
-                .setTargetResolution(CameraUtil.computeSize(mCameraParam.asRatio, SCREEN_WIDTH))
+                //.setTargetResolution(CameraUtil.computeSize(mCameraParam.asRatio, SCREEN_WIDTH))
                 // 非阻塞模式
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();

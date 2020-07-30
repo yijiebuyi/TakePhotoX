@@ -166,6 +166,11 @@ public class CameraImageSaver implements Runnable {
 
     private void postSuccess(final @Nullable Uri outputUri) {
         try {
+            if (mExecutor == null) {
+                mListener.onImageSaved(outputUri);
+                return;
+            }
+
             mExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -181,6 +186,11 @@ public class CameraImageSaver implements Runnable {
     private void postError(final int saveError, final String message,
                            @Nullable final Throwable cause) {
         try {
+            if (mExecutor == null) {
+                mListener.onError(saveError, message, cause);
+                return;
+            }
+
             mExecutor.execute(new Runnable() {
                 @Override
                 public void run() {

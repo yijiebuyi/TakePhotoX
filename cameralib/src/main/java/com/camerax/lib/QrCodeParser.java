@@ -2,12 +2,18 @@ package com.camerax.lib;
 
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 
+import com.camerax.lib.core.CameraImageSaver;
 import com.camerax.lib.util.Future;
 import com.camerax.lib.util.FutureListener;
 import com.camerax.lib.util.ThreadPool;
@@ -19,16 +25,17 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.concurrent.Executors;
 
 /**
  * Copyright (C) 2017
  * 版权所有
  * <p>
  * 功能描述：二维码解析解
- * https://stackoverflow.com/questions/58113159/how-to-use-zxing-with-android-camerax-to-decode-barcode-and-qr-codes
  * <p>
  * 作者：yijiebuyi
  * 创建时间：2020/7/24
@@ -49,10 +56,11 @@ public class QrCodeParser {
 
     /**
      * 识别二维码
+     *
      * @param image
      * @return
      */
-    public void start(final ImageProxy image, final long elapseTime) {
+    public void start(final ImageProxy image, final long elapseTime, final Rect rect) {
         /*if(true) {
             String qrText = execute(image, elapseTime);
             checkNextFrame(qrText, image, elapseTime);
@@ -62,7 +70,8 @@ public class QrCodeParser {
         ThreadPool.getInstance().submit(new ThreadPool.Job<String>() {
             @Override
             public String run(ThreadPool.JobContext jc) {
-                String qrText = execute(image, elapseTime);
+                String qrText = execute(image, rect, elapseTime);
+                //saveImg(image);
                 return qrText;
             }
         }, new FutureListener<String>() {
@@ -89,7 +98,7 @@ public class QrCodeParser {
         }
     }
 
-    private String execute(ImageProxy image, long elapseTime) {
+    private String execute(ImageProxy image, Rect rect, long elapseTime) {
         if ((image.getFormat() == ImageFormat.YUV_420_888
                 || image.getFormat() == ImageFormat.YUV_422_888
                 || image.getFormat() == ImageFormat.YUV_444_888)
@@ -160,6 +169,27 @@ public class QrCodeParser {
         multiFormatReader.setHints(hints);
 
         return multiFormatReader;
+    }
+
+    private void saveImg(ImageProxy image) {
+        String dir = Environment.getExternalStorageDirectory() + "/AAAA";
+        if (!(new File(dir).exists())) {
+            new File(dir).mkdirs();
+        }
+        File path = new File(dir + "/" + System.currentTimeMillis() + ".jpeg");
+        CameraImageSaver saver = new CameraImageSaver(image, path, 0, false, null,
+                new CameraImageSaver.OnImageSavedListener() {
+                    @Override
+                    public void onImageSaved(@NonNull Uri outputFileResults) {
+
+                    }
+
+                    @Override
+                    public void onError(int saveError, String message, @Nullable Throwable cause) {
+                    }
+                });
+
+        saver.run();
     }
 
     public static interface QRCallback {

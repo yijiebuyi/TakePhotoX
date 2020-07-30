@@ -110,7 +110,7 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
         }
 
         //image.setCropRect(mScannerView.getScanRect());
-        mQrCodeParser.start(image, elapseTime);
+        mQrCodeParser.start(image, elapseTime, mScannerView.getScanRect());
     }
 
 }
