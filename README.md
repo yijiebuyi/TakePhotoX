@@ -74,8 +74,7 @@ mCameraView.setOnCameraFaceListener(l);
    cfg.setOnCameraListener(new OnCameraListener() {
        @Override
        public void onTaken(Uri uri) {
-           cfg.hidePanel(false);
-           enterPhotoFragment(uri);
+           //返回拍照图片uri
        }
 
        @Override
