@@ -20,7 +20,30 @@ dependencies {
 #### 基本用法：
 - 使用CameraView，自己实现相机ui
 ```java
+//camera对外提供的功能，详细见ICamera，IFlashLight
+//常用的功能如下：
+    /**
+     * 拍照
+     */
+    public void take();
 
+    /**
+     * 对焦
+     */
+    public void focus(float x, float y, float rawX, float rawY);
+
+    /**
+     * 切换前置后置
+     */
+    public void switchFace();
+
+    /**
+     * 相机切换预览比例和拍照比例
+     * @param ratio
+     */
+    public void switchAspect(@ExAspectRatio.ExRatio int ratio);
+    
+//CameraView使用
 private CameraView mCameraView;
 
 //设置拍照回调
@@ -50,10 +73,11 @@ mCameraView.setOnFocusListener(new OnFocusListener() {
         });
         
 //设置图片分析回调
-mCameraView.setOnImgAnalysisListener(l);
+mCameraView.setOnImgAnalysisListener(OnImgAnalysisListener l);
 //设置前后摄像头切换回调
-mCameraView.setOnCameraFaceListener(l);
-
+mCameraView.setOnCameraFaceListener(OnCameraFaceListener l);
+//设置相机预览view的布局和尺寸变化回调
+mCameraView.setOnPreviewLayoutListener(OnPreviewLayoutListener l);
 ```
 
 
