@@ -1,4 +1,4 @@
-package com.camerax.lib;
+package com.camerax.lib.analysis;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.Fragment;
 
+import com.camerax.lib.R;
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.CameraView;
 import com.camerax.lib.core.ExAspectRatio;
@@ -85,7 +86,7 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
     @Override
     public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
         if (mQrCodeParser == null) {
-            mQrCodeParser = new QrCodeParser();
+            mQrCodeParser = new QrCodeParser(mScannerView.getPreviewSize(), mScannerView.getOptions());
             mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
                 @Override
                 public void onSucc(final String result) {
@@ -109,10 +110,7 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
             });
         }
 
-        //image.setCropRect(mScannerView.getScanRect());
-        int scrOri = mContext.getResources().getConfiguration().orientation;
-        //mQrCodeParser.start(image, elapseTime, scrOri, mScannerView.getScanRect(), mScannerView.getPreviewSize());
-        mQrCodeParser.start(image, elapseTime);
+       mQrCodeParser.execute(image, elapseTime);
     }
 
 }

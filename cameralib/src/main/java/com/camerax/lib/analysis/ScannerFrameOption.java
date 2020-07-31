@@ -1,13 +1,8 @@
-package com.camerax.lib;
+package com.camerax.lib.analysis;
 
 import android.graphics.Point;
-import android.graphics.Rect;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.RestrictTo;
-import androidx.camera.core.AspectRatio;
-
-import com.camerax.lib.core.ExAspectRatio;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -31,8 +26,8 @@ public class ScannerFrameOption implements Serializable {
     private @FrameMode.Mode int mFrameMode;
     private Point mFrameOffset;
     private float mFrameRatio;
-    private int mFrameColor;
-    private int mCornerColor;
+    private int mFrameBorderColor;
+    private int mFrameCornerColor;
 
     private int mFrameWidth;
     private int mFrameHeight;
@@ -41,8 +36,8 @@ public class ScannerFrameOption implements Serializable {
         mFrameMode = builder.frameMode;
         mFrameOffset = builder.frameOffset;
         mFrameRatio = builder.frameRatio;
-        mFrameColor = builder.frameColor;
-        mCornerColor = builder.cornerColor;
+        mFrameBorderColor = builder.frameBorderColor;
+        mFrameCornerColor = builder.frameCornerColor;
     }
 
     public int getFrameMode() {
@@ -57,12 +52,12 @@ public class ScannerFrameOption implements Serializable {
         return mFrameRatio;
     }
 
-    public int getFrameColor() {
-        return mFrameColor;
+    public int getFrameBorderColor() {
+        return mFrameBorderColor;
     }
 
-    public int getCornerColor() {
-        return mCornerColor;
+    public int getFrameCornerColor() {
+        return mFrameCornerColor;
     }
 
 
@@ -78,8 +73,8 @@ public class ScannerFrameOption implements Serializable {
         private @FrameMode.Mode int frameMode;
         private Point frameOffset;
         private float frameRatio;
-        private int frameColor;
-        private int cornerColor;
+        private int frameBorderColor;
+        private int frameCornerColor;
         private int frameWidth;
         private int frameHeight;
 
@@ -102,13 +97,13 @@ public class ScannerFrameOption implements Serializable {
             return this;
         }
 
-        public Builder frameColor(int color) {
-            frameColor = color;
+        public Builder frameBorderColor(int color) {
+            frameBorderColor = color;
             return this;
         }
 
-        public Builder cornerColor(int color) {
-            cornerColor = color;
+        public Builder frameCornerColor(int color) {
+            frameCornerColor = color;
             return this;
         }
 

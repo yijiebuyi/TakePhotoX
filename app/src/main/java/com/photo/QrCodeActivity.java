@@ -1,6 +1,5 @@
 package com.photo;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -8,11 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.camerax.lib.OnPhotoListener;
-import com.camerax.lib.PhotoFragment;
-import com.camerax.lib.QrCodeFragment;
-import com.camerax.lib.QrCodeParser;
-import com.camerax.lib.ScannerFrameOption;
+import com.camerax.lib.analysis.QrCodeFragment;
 
 /**
  * Copyright (C) 2017

@@ -32,8 +32,7 @@
 
         <activity
             android:name=".QrCodeActivity"
-            android:theme="@style/NoTitleTheme"
-            android:screenOrientation="portrait"></activity>
+            android:theme="@style/NoTitleTheme"/>
 
         <activity android:name=".CameraViewActivity"/>
 

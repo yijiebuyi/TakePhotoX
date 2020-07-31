@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.camerax.lib;
+package com.camerax.lib.analysis;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,6 +31,8 @@ import android.util.Size;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+
+import com.camerax.lib.R;
 
 
 /**
@@ -52,16 +54,22 @@ public final class ScannerView extends View {
     private ScannerFrameOption mOptions;
     private int SCAN_VELOCITY = 6;
 
-    private @ScannerFrameOption.FrameMode.Mode
+    private final float DEFAULT_FRAME_RATIO = 0.6f;
+    private final int DEFAULT_FRAME_BORDER_COLOR = 0xFFDDDDDD;
+    private final int DEFAULT_FRAME_CORNER_COLOR = 0xFF0F94ED;
+
+    @ScannerFrameOption.FrameMode.Mode
     int mFrameMode = ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE;
 
+    private float mFrameRatio = DEFAULT_FRAME_RATIO;
+    private int mBorderColor = DEFAULT_FRAME_BORDER_COLOR;
+    private int mCornerColor = DEFAULT_FRAME_CORNER_COLOR;
+
     private Point mFrameOffset;
-    private float mFrameRatio = 0.6f;
-    private int mBorderColor = 0xFFDDDDDD;
-    private int mCornerColor = 0xFF0F94ED;
 
     private Rect mFrameRect;
     private Rect mScanLineRect;
+
     private int mScanLineTop;
 
     private int mWidth;
@@ -105,15 +113,16 @@ public final class ScannerView extends View {
         mOptions = options;
 
         mFrameOffset = options.getFrameOffset();
-        mCornerColor = options.getCornerColor();
-        mBorderColor = options.getFrameColor();
+        mCornerColor = options.getFrameCornerColor();
+        mBorderColor = options.getFrameBorderColor();
     }
 
     private void getDefaultOptions() {
         mOptions = new ScannerFrameOption
-                .Builder(ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE)
-                .frameColor(mBorderColor)
-                .cornerColor(mCornerColor)
+                .Builder(mFrameMode)
+                .frameBorderColor(DEFAULT_FRAME_BORDER_COLOR)
+                .frameCornerColor(DEFAULT_FRAME_CORNER_COLOR)
+                .frameRatio(DEFAULT_FRAME_RATIO)
                 .build();
     }
 
@@ -159,18 +168,21 @@ public final class ScannerView extends View {
     public void onDraw(Canvas canvas) {
         canvas.save();
 
-        drawScanMask(canvas);
+        drawScanMaskBox(canvas);
         drawFrameBorder(canvas);
         drawCorner(canvas);
-        drawScanLight(canvas);
+        drawScanLine(canvas);
 
         canvas.restore();
 
         postInvalidateDelayed(ANIMATION_DELAY, mFrameRect.left, mFrameRect.top, mFrameRect.right, mFrameRect.bottom);
     }
 
-
-    private void drawScanMask(Canvas canvas) {
+    /**
+     * 绘制扫描窗口
+     * @param canvas
+     */
+    private void drawScanMaskBox(Canvas canvas) {
         Paint paint = mPaint;
         paint.setColor(0x88000000);
         Rect bg = new Rect(0, 0, mWidth, mHeight);
@@ -183,14 +195,10 @@ public final class ScannerView extends View {
         drawRegion(canvas, regionBg, paint);
     }
 
-    private void drawRegion(Canvas canvas, Region region, Paint paint) {
-        RegionIterator iterator = new RegionIterator(region);
-        Rect r = new Rect();
-        while (iterator.next(r)) {
-            canvas.drawRect(r, paint);
-        }
-    }
-
+    /**
+     * 绘制四个角
+     * @param canvas
+     */
     private void drawCorner(Canvas canvas) {
         Paint paint = mPaint;
         paint.setColor(mCornerColor);
@@ -220,6 +228,10 @@ public final class ScannerView extends View {
         frame.inset(corWidth, corWidth);
     }
 
+    /**
+     * 绘制扫描窗口边框
+     * @param canvas
+     */
     private void drawFrameBorder(Canvas canvas) {
         Paint paint = mPaint;
         int width = dip2px(mContext, 1);
@@ -242,7 +254,7 @@ public final class ScannerView extends View {
      *
      * @param canvas
      */
-    private void drawScanLight(Canvas canvas) {
+    private void drawScanLine(Canvas canvas) {
         Rect frame = mFrameRect;
         int lineHeight = dip2px(mContext, 10);
 
@@ -261,6 +273,14 @@ public final class ScannerView extends View {
         canvas.drawBitmap(mScanLight, null, mScanLineRect, null);
     }
 
+    private void drawRegion(Canvas canvas, Region region, Paint paint) {
+        RegionIterator iterator = new RegionIterator(region);
+        Rect r = new Rect();
+        while (iterator.next(r)) {
+            canvas.drawRect(r, paint);
+        }
+    }
+
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
@@ -270,17 +290,18 @@ public final class ScannerView extends View {
     }
 
     /**
-     * 获取扫描区域
+     * 获取预览view
+     * @return
      */
-    public Rect getScanRect() {
-        return mFrameRect;
-    }
-
     public Size getPreviewSize() {
         if (mSize == null) {
             mSize = new Size(mWidth, mHeight );
         }
 
         return mSize;
+    }
+
+    public ScannerFrameOption getOptions() {
+        return mOptions;
     }
 }

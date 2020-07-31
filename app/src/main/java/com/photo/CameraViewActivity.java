@@ -9,11 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.camerax.lib.CameraXActivity;
-import com.camerax.lib.QrCodeFragment;
 import com.camerax.lib.core.CameraView;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;

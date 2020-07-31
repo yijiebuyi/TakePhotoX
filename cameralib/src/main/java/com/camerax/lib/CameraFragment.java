@@ -450,7 +450,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
         }
 
         if (succ) {
-            mFocusImageView.onFocusFailed();
+            mFocusImageView.onFocusSuccess();
         } else {
             mFocusImageView.onFocusFailed();
         }

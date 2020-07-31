@@ -13,6 +13,7 @@ import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.camerax.lib.analysis.QrCodeParser;
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.ExAspectRatio;
 import com.camerax.lib.core.OnCameraListener;
@@ -75,27 +76,6 @@ public class CameraXActivity extends AppCompatActivity {
             }
         });
 
-        cfg.setOnImgAnalysisListener(new OnImgAnalysisListener() {
-            @Override
-            public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
-                if (mQrCodeParser == null) {
-                    mQrCodeParser = new QrCodeParser();
-                    mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
-                        @Override
-                        public void onSucc(String result) {
-                            Toast.makeText(CameraXActivity.this, result, Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onFail() {
-                            Toast.makeText(CameraXActivity.this, R.string.qr_code_fail, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                mQrCodeParser.start(image, elapseTime);
-            }
-        });
         ft.replace(R.id.container, cfg, CAMERA_FRAGMENT);
         ft.commit();
     }
