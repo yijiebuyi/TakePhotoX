@@ -366,14 +366,12 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     private void initPreview() {
         int ratio = mCameraParam.asRatio;
         if (ratio == ExAspectRatio.RATIO_1_1) {
-            mPreview = new Preview.Builder()
-                    .setTargetResolution(new Size(SCREEN_WIDTH, SCREEN_WIDTH))
-                    .build();
-        } else {
-            mPreview = new Preview.Builder()
-                    .setTargetAspectRatio(ratio)
-                    .build();
+            ratio = ExAspectRatio.RATIO_4_3;
         }
+
+        mPreview = new Preview.Builder()
+                .setTargetAspectRatio(ratio)
+                .build();
     }
 
     /**
