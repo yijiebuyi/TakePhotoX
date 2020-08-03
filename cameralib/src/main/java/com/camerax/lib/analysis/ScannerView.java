@@ -54,19 +54,6 @@ public final class ScannerView extends View {
     private ScannerFrameOption mOptions;
     private int SCAN_VELOCITY = 6;
 
-    private final float DEFAULT_FRAME_RATIO = 0.6f;
-    private final int DEFAULT_FRAME_BORDER_COLOR = 0xFFDDDDDD;
-    private final int DEFAULT_FRAME_CORNER_COLOR = 0xFF0F94ED;
-
-    @ScannerFrameOption.FrameMode.Mode
-    int mFrameMode = ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE;
-
-    private float mFrameRatio = DEFAULT_FRAME_RATIO;
-    private int mBorderColor = DEFAULT_FRAME_BORDER_COLOR;
-    private int mCornerColor = DEFAULT_FRAME_CORNER_COLOR;
-
-    private Point mFrameOffset;
-
     private Rect mFrameRect;
     private Rect mScanLineRect;
 
@@ -100,9 +87,7 @@ public final class ScannerView extends View {
         mPaint = new Paint();
         mFrameRect = new Rect();
         mScanLineRect = new Rect();
-        if (attrs != null) {
-            getDefaultOptions();
-        }
+        getDefaultOptions();
 
         // 扫描控件
         mScanLight = BitmapFactory.decodeResource(getResources(), R.drawable.scan_light);
@@ -112,18 +97,13 @@ public final class ScannerView extends View {
     public void setOptions(@NonNull ScannerFrameOption options) {
         mOptions = options;
 
-        mFrameOffset = options.getFrameOffset();
-        mCornerColor = options.getFrameCornerColor();
-        mBorderColor = options.getFrameBorderColor();
+        if (options.getFrameMode() == ScannerFrameOption.FrameMode.MODE_FRAME_NO) {
+            setVisibility(GONE);
+        }
     }
 
     private void getDefaultOptions() {
-        mOptions = new ScannerFrameOption
-                .Builder(mFrameMode)
-                .frameBorderColor(DEFAULT_FRAME_BORDER_COLOR)
-                .frameCornerColor(DEFAULT_FRAME_CORNER_COLOR)
-                .frameRatio(DEFAULT_FRAME_RATIO)
-                .build();
+        mOptions = new ScannerFrameOption.Builder().build();
     }
 
     @Override
@@ -139,13 +119,13 @@ public final class ScannerView extends View {
 
         switch (mOptions.getFrameMode()) {
             case ScannerFrameOption.FrameMode.MODE_FRAME_SAME_RATIO:
-                frameWidth = (int) (mFrameRatio * mWidth);
-                frameHeight = (int) (mFrameRatio * mHeight);
+                frameWidth = (int) (mOptions.getFrameRatio() * mWidth);
+                frameHeight = (int) (mOptions.getFrameRatio() * mHeight);
                 break;
             case ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE:
                 int size = Math.min(mWidth, mHeight);
-                frameWidth = (int) (mFrameRatio * size);
-                frameHeight = (int) (mFrameRatio * size);
+                frameWidth = (int) (mOptions.getFrameRatio() * size);
+                frameHeight = (int) (mOptions.getFrameRatio() * size);
                 break;
             case ScannerFrameOption.FrameMode.MODE_FRAME_FREE:
                 frameWidth = mOptions.getFrameWidth();
@@ -153,12 +133,13 @@ public final class ScannerView extends View {
                 break;
         }
 
-        if (mFrameOffset == null) {
+        if (mOptions.getFrameOffset() == null) {
             int x = (mWidth - frameWidth) / 2;
             int y = (mHeight - frameHeight) / 2;
             mFrameRect.set(x, y, x + frameWidth, y + frameHeight);
         } else {
-            mFrameRect.set(mFrameOffset.x, mFrameOffset.y, mFrameOffset.x + frameWidth, mFrameOffset.y + frameHeight);
+            Point offset = mOptions.getFrameOffset();
+            mFrameRect.set(offset.x, offset.y, offset.x + frameWidth, offset.y + frameHeight);
         }
 
         postInvalidate();
@@ -201,7 +182,7 @@ public final class ScannerView extends View {
      */
     private void drawCorner(Canvas canvas) {
         Paint paint = mPaint;
-        paint.setColor(mCornerColor);
+        paint.setColor(mOptions.getFrameCornerColor());
         paint.setStyle(Paint.Style.FILL);
 
         Rect frame = mFrameRect;
@@ -239,7 +220,7 @@ public final class ScannerView extends View {
         Rect frame = mFrameRect;
         frame.inset(-width, -width);
 
-        paint.setColor(mBorderColor);
+        paint.setColor(mOptions.getFrameBorderColor());
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(width);
 
@@ -249,7 +230,7 @@ public final class ScannerView extends View {
         frame.inset(width, width);
     }
 
-    /**
+     /**
      * 绘制移动扫描线
      *
      * @param canvas

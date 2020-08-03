@@ -34,9 +34,7 @@ import com.camerax.lib.core.OnImgAnalysisListener;
  */
 
 public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAnalysisListener {
-    private CameraView mCameraView;
-    private ScannerView mScannerView;
-
+    private QRCodeView mQRCodeView;
     private QrCodeParser mQrCodeParser;
 
     private Context mContext;
@@ -50,26 +48,20 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_qrcode_scan, null);
-
-        mCameraView = view.findViewById(R.id.camera_preview);
-        mCameraView.setOnFocusListener(this);
-        mCameraView.setOnImgAnalysisListener(this);
-
-        mScannerView = view.findViewById(R.id.qrcode_scan_view);
-
-        return view;
+        mQRCodeView = new QRCodeView(mContext);
+        mQRCodeView.setOnFocusListener(this);
+        mQRCodeView.setOnImgAnalysisListener(this);
+        mQRCodeView.setScannerFrameOption(new ScannerFrameOption.Builder()
+                .frameMode(ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE)
+                .frameRatio(0.6f)
+                .build());
+        return mQRCodeView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        CameraOption option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
-                .analysisImg(true)
-                .build();
-
-        mCameraView.initCamera(option, this);
+        mQRCodeView.startScan(this);
     }
 
 
@@ -86,7 +78,7 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
     @Override
     public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
         if (mQrCodeParser == null) {
-            mQrCodeParser = new QrCodeParser(mScannerView.getPreviewSize(), mScannerView.getOptions());
+            mQrCodeParser = new QrCodeParser(mQRCodeView.getPreviewSize(), mQRCodeView.getOptions());
             mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
                 @Override
                 public void onSucc(final String result) {

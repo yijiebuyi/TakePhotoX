@@ -87,21 +87,27 @@ public class QrCodeParser {
 
     /**
      * 计算扫描框区域，相对于image计算
+     * 当扫描框维全屏是，默认识别全图
      *
      * @param image
      */
     private void checkAnalysisRect(ImageProxy image) {
-        if (mAnalysisRect != null) {
+        if (mScannerFrameOption == null ||
+                mScannerFrameOption.getFrameMode() == ScannerFrameOption.FrameMode.MODE_FRAME_NO) {
+            mAnalysisRect = null;
             return;
+        } else {
+            if (mAnalysisRect != null) {
+                return;
+            }
+
+            if (mScannerFrameOption == null || mScannerFrameOption.getFrameRatio() < 0) {
+                return;
+            }
+
+            mAnalysisRect = new Rect();
+            mAnalysisRect = AnalysisRect.build(image, mScannerFrameOption.getFrameRatio(), mAnalysisRect);
         }
-
-        if (mScannerFrameOption == null || mScannerFrameOption.getFrameRatio() < 0) {
-            return;
-        }
-
-        mAnalysisRect = new Rect();
-        mAnalysisRect = AnalysisRect.build(image, mScannerFrameOption.getFrameRatio(), mAnalysisRect);
-
     }
 
     private void checkNextFrame(String qrText, ImageProxy image, long elapseTime) {

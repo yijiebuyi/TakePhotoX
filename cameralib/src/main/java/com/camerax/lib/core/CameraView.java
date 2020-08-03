@@ -146,6 +146,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     private OnFocusListener mOnFocusListener;
     private OnCameraFaceListener mOnCameraFaceListener;
     private OnPreviewLayoutListener mOnPreviewLayoutListener;
+    private OnCameraBindListener mOnCameraBindListener;
 
     public void setOnCameraListener(OnCameraListener listener) {
         mOnCameraListener = listener;
@@ -165,6 +166,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     public void setOnPreviewLayoutListener(OnPreviewLayoutListener listener) {
         mOnPreviewLayoutListener = listener;
+    }
+
+    public void setOnCameraBindListener(OnCameraBindListener listener) {
+        mOnCameraBindListener = listener;
     }
 
     /**
@@ -406,6 +411,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
         mCameraInfo = mCamera.getCameraInfo();
         mCameraControl = mCamera.getCameraControl();
+
+        if (mOnCameraBindListener != null) {
+            mOnCameraBindListener.onCameraBind();
+        }
     }
 
     @Override
@@ -539,6 +548,15 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         reset();
     }
 
+    /**
+     * 相机缩放
+     */
+    public void scale(float scale) {
+        if (mCameraControl != null) {
+            mCameraControl.setZoomRatio(scale);
+        }
+    }
+
     @Override
     public void reset() {
         mExecutor = ContextCompat.getMainExecutor(getContext());
@@ -605,7 +623,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     @Override
     public void onZoom(float scale) {
-        mCameraControl.setZoomRatio(scale);
+        scale(scale);
     }
 
     @NonNull

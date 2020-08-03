@@ -23,7 +23,12 @@ import java.lang.annotation.RetentionPolicy;
  */
 
 public class ScannerFrameOption implements Serializable {
-    private @FrameMode.Mode int mFrameMode;
+    private final static float DEFAULT_FRAME_RATIO = 0.6f;
+    private final static int DEFAULT_FRAME_BORDER_COLOR = 0xFFDDDDDD;
+    private final static int DEFAULT_FRAME_CORNER_COLOR = 0xFF0F94ED;
+
+    private @FrameMode.Mode
+    int mFrameMode;
     private Point mFrameOffset;
     private float mFrameRatio;
     private int mFrameBorderColor;
@@ -70,7 +75,8 @@ public class ScannerFrameOption implements Serializable {
     }
 
     public static final class Builder {
-        private @FrameMode.Mode int frameMode;
+        @FrameMode.Mode
+        private int frameMode = FrameMode.MODE_FRAME_SQUARE;
         private Point frameOffset;
         private float frameRatio;
         private int frameBorderColor;
@@ -78,8 +84,12 @@ public class ScannerFrameOption implements Serializable {
         private int frameWidth;
         private int frameHeight;
 
-        public Builder(@FrameMode.Mode int mode) {
-            frameMode = mode;
+        //默认配置
+        public Builder() {
+            frameMode = FrameMode.MODE_FRAME_SQUARE;
+            frameRatio = DEFAULT_FRAME_RATIO;
+            frameBorderColor = DEFAULT_FRAME_BORDER_COLOR;
+            frameCornerColor = DEFAULT_FRAME_CORNER_COLOR;
         }
 
         public Builder frameMode(int mode) {
@@ -140,7 +150,8 @@ public class ScannerFrameOption implements Serializable {
          */
         public static final int MODE_FRAME_FREE = 3;
 
-        private FrameMode() {}
+        private FrameMode() {
+        }
 
         /**
          * @hide

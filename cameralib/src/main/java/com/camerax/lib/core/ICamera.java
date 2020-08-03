@@ -37,6 +37,11 @@ interface ICamera {
     public void switchAspect(@ExAspectRatio.ExRatio int ratio);
 
     /**
+     * 相机缩放
+     */
+    public void scale(float scale);
+
+    /**
      *  重置相机
      */
     public void reset();
