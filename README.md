@@ -12,7 +12,7 @@
 ```gradle
 
 dependencies {
-  implementation 'com.github.yijiebuyi:TakePhotoX:v1.0.9'
+  implementation 'com.github.yijiebuyi:TakePhotoX:v1.1.0'
 }
 
 ```
