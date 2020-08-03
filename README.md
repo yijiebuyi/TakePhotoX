@@ -20,40 +20,31 @@ dependencies {
 #### 基本用法：
 - 使用CameraView，自己实现相机ui
 ```java
+//CameraView对外提供的功能，详细见ICamera，IFlashLight
 
+//CameraView使用
 private CameraView mCameraView;
-
+//================常用的功能如下=================
+//拍照
+mCameraView.take();
+//对焦
+mCameraView.focus(float x, float y, float rawX, float rawY);
+//切换前置后置
+mCameraView.switchFace();
+//相机切换预览比例和拍照比例
+mCameraView.switchAspect(@ExAspectRatio.ExRatio int ratio);
+    
+//================设置回调======================
 //设置拍照回调
-mCameraView.setOnCameraListener(new OnCameraListener() {
-            @Override
-            public void onTaken(Uri uri) {
-                
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-        
+mCameraView.setOnCameraListener(OnCameraListener l);
 //设置对焦回调
-mCameraView.setOnFocusListener(new OnFocusListener() {
-            @Override
-            public void onStartFocus(float x, float y, float rawX, float rawY) {
-                
-            }
-
-            @Override
-            public void onEndFocus(boolean succ) {
-
-            }
-        });
-        
+mCameraView.setOnFocusListener(OnFocusListener l);    
 //设置图片分析回调
-mCameraView.setOnImgAnalysisListener(l);
+mCameraView.setOnImgAnalysisListener(OnImgAnalysisListener l);
 //设置前后摄像头切换回调
-mCameraView.setOnCameraFaceListener(l);
-
+mCameraView.setOnCameraFaceListener(OnCameraFaceListener l);
+//设置相机预览view的布局和尺寸变化回调
+mCameraView.setOnPreviewLayoutListener(OnPreviewLayoutListener l);
 ```
 
 
@@ -74,8 +65,7 @@ mCameraView.setOnCameraFaceListener(l);
    cfg.setOnCameraListener(new OnCameraListener() {
        @Override
        public void onTaken(Uri uri) {
-           cfg.hidePanel(false);
-           enterPhotoFragment(uri);
+           //返回拍照图片uri
        }
 
        @Override
