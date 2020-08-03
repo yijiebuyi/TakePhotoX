@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner;
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.CameraView;
 import com.camerax.lib.core.ExAspectRatio;
-import com.camerax.lib.core.OnCameraBindListener;
 import com.camerax.lib.core.OnFocusListener;
 import com.camerax.lib.core.OnImgAnalysisListener;
 

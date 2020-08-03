@@ -6,10 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,7 +15,6 @@ import com.camerax.lib.analysis.QrCodeParser;
 import com.camerax.lib.core.CameraOption;
 import com.camerax.lib.core.ExAspectRatio;
 import com.camerax.lib.core.OnCameraListener;
-import com.camerax.lib.core.OnImgAnalysisListener;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.bean.Permissions;

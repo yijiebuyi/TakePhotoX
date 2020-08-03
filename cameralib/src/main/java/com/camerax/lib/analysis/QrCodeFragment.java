@@ -13,9 +13,6 @@ import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.Fragment;
 
 import com.camerax.lib.R;
-import com.camerax.lib.core.CameraOption;
-import com.camerax.lib.core.CameraView;
-import com.camerax.lib.core.ExAspectRatio;
 import com.camerax.lib.core.OnFocusListener;
 import com.camerax.lib.core.OnImgAnalysisListener;
 
