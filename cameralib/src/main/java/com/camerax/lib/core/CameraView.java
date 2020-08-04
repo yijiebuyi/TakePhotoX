@@ -81,6 +81,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     private LifecycleOwner mLifecycleOwner;
     private Executor mExecutor;
+    private ProcessCameraProvider mCameraProvider;
 
     /**
      * 是否需要图片分析
@@ -185,9 +186,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     /**
      * 设置预览比例以及布局大小
+     * 子类可自己计算比例，以及布局位置
      * @param asRatio
      */
-    private void setPreviewAspect(@ExAspectRatio.ExRatio int asRatio) {
+    protected void setPreviewAspect(@ExAspectRatio.ExRatio int asRatio) {
         //是否是竖屏
         boolean isPortrait = mContext.getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT;
 
@@ -568,9 +570,9 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
             @Override
             public void run() {
                 try {
-                    ProcessCameraProvider cameraProvider = mCameraProviderFuture.get();
-                    cameraProvider.unbindAll();
-                    bindPreview(cameraProvider);
+                    mCameraProvider = mCameraProviderFuture.get();
+                    mCameraProvider.unbindAll();
+                    bindPreview(mCameraProvider);
                 } catch (ExecutionException | InterruptedException e) {
                     // No errors need to be handled for this Future.
                     // This should never be reached.
@@ -630,5 +632,17 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     @Override
     public CameraXConfig getCameraXConfig() {
         return Camera2Config.defaultConfig();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        release();
+    }
+
+    public void release() {
+        if (mCameraProvider != null) {
+            mCameraProvider.unbindAll();
+        }
     }
 }

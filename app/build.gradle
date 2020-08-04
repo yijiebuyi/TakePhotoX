@@ -37,4 +37,9 @@ dependencies {
     implementation 'com.qw:soulpermission:1.3.0'
 
     implementation project(':cameralib')
+
+    //内存泄漏canary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    //preReleaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
 }

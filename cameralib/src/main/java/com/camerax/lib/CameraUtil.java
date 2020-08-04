@@ -8,6 +8,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.Size;
 
+import androidx.exifinterface.media.ExifInterface;
+
 import com.camerax.lib.core.ExAspectRatio;
 
 import java.io.BufferedOutputStream;
@@ -164,5 +166,17 @@ public class CameraUtil {
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    public static int getOrientation(String path) {
+        int orientation = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        } catch (IOException var4) {
+            var4.printStackTrace();
+        }
+
+        return orientation;
     }
 }
