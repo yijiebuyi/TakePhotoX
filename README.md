@@ -91,6 +91,7 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
 ```
 
 ### 二维码扫描基本用法：
+注：需要依赖zxing的包
 - 二维码扫描 直接使用QrCodeFragment
 - 二维码扫描 使用QRCodeView
 ```java
