@@ -17,7 +17,7 @@ dependencies {
 
 ```
 
-#### 基本用法：
+### 拍照基本用法：
 - 使用CameraView，自己实现相机ui
 ```java
 //CameraView对外提供的功能，详细见ICamera，IFlashLight
@@ -90,8 +90,17 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
     }
 ```
 
-
-- 后续添加系统默的拍照
+### 二维码扫描基本用法：
+- 二维码扫描 直接使用QrCodeFragment
+- 二维码扫描 使用QRCodeView
+```java
+    mQRCodeView = new QRCodeView(mContext);
+    mQRCodeView.setOnImgAnalysisListener(this);
+    mQRCodeView.setScannerFrameOption(new ScannerFrameOption.Builder()
+            .frameMode(ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE)
+            .frameRatio(0.6f)
+            .build());
+```
 
 # Demo下载
 https://www.pgyer.com/53su
