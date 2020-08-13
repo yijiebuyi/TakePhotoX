@@ -465,26 +465,12 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
             @Override
             public void onCaptureSuccess(final @NonNull ImageProxy image) {
                 //super.onCaptureSuccess(image);
-                CameraImageSaver saver = new CameraImageSaver(image, file, 0,
-                        mCameraParam.faceFront, mExecutor, new CameraImageSaver.OnImageSavedListener() {
-                    @Override
-                    public void onImageSaved(@NonNull Uri outputFileResults) {
-                        if (mOnCameraListener != null) {
-                            mOnCameraListener.onTaken(Uri.fromFile(file));
-                        }
-                        image.close();
-                    }
+                //TODO Save Image
 
-                    @Override
-                    public void onError(int saveError, String message, @Nullable Throwable cause) {
-                        Toast.makeText(mContext, R.string.take_photo_fail, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                if (mIoExecutor == null) {
-                    mIoExecutor = Executors.newSingleThreadExecutor();
-                }
-                mIoExecutor.execute(saver);
+                //if (mIoExecutor == null) {
+                //    mIoExecutor = Executors.newSingleThreadExecutor();
+                //}
+                //mIoExecutor.execute(saver);
             }
 
             @Override
