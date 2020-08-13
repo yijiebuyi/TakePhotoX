@@ -171,7 +171,7 @@ public final class ScannerView extends View {
         Region regionBg = new Region(bg);
         Region regionFrame = new Region(mFrameRect);
 
-        regionBg.op(regionFrame, Region.Op.XOR);//交集
+        regionBg.op(regionFrame, Region.Op.XOR);
         paint.setStyle(Paint.Style.FILL);
         drawRegion(canvas, regionBg, paint);
     }
