@@ -8,7 +8,17 @@
  - 支持灯光控制
 
 ## 使用
- - 依赖androidx
+ - 1.在project的build.gradle添加如下代码
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+ - 2.依赖androidx
 ```gradle
 
 dependencies {
