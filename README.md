@@ -1,6 +1,10 @@
 # TakePhotoX
 基于camerax拍照
 
+# Demo下载
+https://www.pgyer.com/53su
+安装密码：123456
+
 ### 功能
  - 支持前后摄像头切换
  - 支持4:3 16:9 1:1 图片拍摄
@@ -113,6 +117,3 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
             .build());
 ```
 
-# Demo下载
-https://www.pgyer.com/53su
-安装密码：123456
