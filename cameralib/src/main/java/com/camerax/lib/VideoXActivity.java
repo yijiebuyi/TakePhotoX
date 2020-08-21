@@ -60,7 +60,7 @@ public class VideoXActivity extends AppCompatActivity {
         cfg.setOnCameraListener(new OnCameraListener() {
             @Override
             public void onTaken(Uri uri) {
-                enterPhotoFragment(uri);
+                enterVideoPlayFragment(uri);
             }
 
             @Override
@@ -74,30 +74,14 @@ public class VideoXActivity extends AppCompatActivity {
     }
 
 
-    public void enterPhotoFragment(Uri fileUri) {
+    public void enterVideoPlayFragment(Uri fileUri) {
         FragmentManager fm = getSupportFragmentManager();
         final FragmentTransaction ft = fm.beginTransaction();
 
-        final PhotoFragment fg = new PhotoFragment();
+        final VideoPlayFragment fg = new VideoPlayFragment();
         Bundle data = new Bundle();
-        data.putParcelable(PhotoFragment.KEY_PHOTO_URI, fileUri);
+        data.putParcelable(VideoPlayFragment.KEY_VIDEO_URI, fileUri);
         fg.setArguments(data);
-        fg.setOnPhotoListener(new OnPhotoListener() {
-            @Override
-            public void onPhotoSelect(Uri uri) {
-                finishWithData(uri);
-            }
-
-            @Override
-            public void onCancel() {
-                enterVideoFragment();
-            }
-
-            @Override
-            public void onPhotoLoad(boolean succ) {
-
-            }
-        });
 
         ft.replace(R.id.container, fg);
         ft.commit();
