@@ -1,6 +1,10 @@
 # TakePhotoX
 基于camerax拍照
 
+# Demo下载
+https://www.pgyer.com/53su
+安装密码：123456
+
 ### 功能
  - 支持前后摄像头切换
  - 支持4:3 16:9 1:1 图片拍摄
@@ -8,7 +12,17 @@
  - 支持灯光控制
 
 ## 使用
- - 依赖androidx
+ - 1.在project的build.gradle添加如下代码
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+ - 2.依赖androidx
 ```gradle
 
 dependencies {
@@ -103,6 +117,3 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
             .build());
 ```
 
-# Demo下载
-https://www.pgyer.com/53su
-安装密码：123456
