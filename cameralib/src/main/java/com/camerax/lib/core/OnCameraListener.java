@@ -19,7 +19,7 @@ import android.net.Uri;
 public interface OnCameraListener {
 
     /**
-     * 拍照回调
+     * 拍照/录像回调
      * @param uri
      */
     void onTaken(Uri uri);

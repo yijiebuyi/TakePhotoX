@@ -15,5 +15,7 @@
             android:name=".CameraXActivity"
             android:theme="@style/NoTitleTheme"/>
 
+        <activity android:name=".VideoXActivity"
+            android:theme="@style/NoTitleTheme"/>
     </application>
 </manifest>

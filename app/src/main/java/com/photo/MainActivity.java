@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.camerax.lib.CameraXActivity;
+import com.camerax.lib.VideoXActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.qrcode_scan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(MainActivity.this, QrCodeActivity.class), 1000);
+                startActivityForResult(new Intent(MainActivity.this, QrCodeActivity.class), 2000);
+            }
+        });
+
+        findViewById(R.id.take_video).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(MainActivity.this, VideoXActivity.class), 3000);
             }
         });
     }

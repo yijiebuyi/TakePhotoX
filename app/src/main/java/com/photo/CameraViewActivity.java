@@ -39,8 +39,6 @@ public class CameraViewActivity extends AppCompatActivity {
         requestPermission();
     }
 
-
-
     private void requestPermission() {
         SoulPermission.getInstance().checkAndRequestPermissions(
                 Permissions.build(Manifest.permission.CAMERA,
@@ -58,19 +56,12 @@ public class CameraViewActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         addContentView(mCaraView, params);
 
-                        /*mCaraView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(CameraViewActivity.this, "succ", 1).show();
-                                mCaraView.take();
-                            }
-                        });*/
                         mCaraView.setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View v, MotionEvent event) {
                                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                                     Toast.makeText(CameraViewActivity.this, "succ", 1).show();
-                                    mCaraView.take();
+                                    mCaraView.takePhoto();
                                 }
                                 return true;
                             }

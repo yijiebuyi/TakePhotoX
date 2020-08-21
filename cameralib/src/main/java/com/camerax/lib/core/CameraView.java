@@ -29,6 +29,8 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
+import androidx.camera.core.VideoCapture;
+import androidx.camera.core.impl.VideoCaptureConfig;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -41,7 +43,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
@@ -74,6 +75,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     private Camera mCamera;
 
     private ImageCapture mImageCapture;
+
+    private VideoCapture mVideoCapture;
+    private VideoCaptureConfig mVideoCaptureConfig;
+
     private ImageAnalysis mImageAnalysis;
     private CameraInfo mCameraInfo;
     private CameraControl mCameraControl;
@@ -367,6 +372,11 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         orientationEventListener.enable();
     }
 
+    private void setVideoCapture () {
+         VideoCaptureConfig.Builder builder = new VideoCaptureConfig.Builder();
+
+    }
+
     /**
      * 构建图像预览
      */
@@ -420,16 +430,22 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     }
 
     @Override
-    public void take() {
+    public void takePhoto() {
         final File file = !TextUtils.isEmpty(mOutFilePath) ? new File(mOutFilePath) : CameraUtil.getOutFile(mContext);
-        saveToFile(file);
+        savePhotoToFile(file);
+    }
+
+    @Override
+    public void takeVideo() {
+        final File file = !TextUtils.isEmpty(mOutFilePath) ? new File(mOutFilePath) : CameraUtil.getVideoOutFile(mContext);
+        saveVideoToFile(file);
     }
 
     /**
      * 直接将图片保存到文件，由系统默认处理
      * @param file
      */
-    private void saveToFile(final File file) {
+    private void savePhotoToFile(final File file) {
         ImageCapture.Metadata metadata = new ImageCapture.Metadata();
         metadata.setReversedHorizontal(mCameraParam.faceFront);
         ImageCapture.OutputFileOptions outputFileOptions =
@@ -478,6 +494,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
                 super.onError(exception);
             }
         });
+    }
+
+    private void saveVideoToFile(File file) {
+        //TODO
     }
 
     @Override

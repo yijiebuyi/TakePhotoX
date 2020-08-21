@@ -18,7 +18,12 @@ interface ICamera {
     /**
      * 拍照
      */
-    public void take();
+    public void takePhoto();
+
+    /**
+     * 录像
+     */
+    public void takeVideo();
 
     /**
      * 对焦

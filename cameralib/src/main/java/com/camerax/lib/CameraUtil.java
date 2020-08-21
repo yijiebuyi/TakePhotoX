@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Copyright (C) 2017
@@ -143,6 +145,16 @@ public class CameraUtil {
     public static File getOutFile(Context context) {
         String dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
         return new File(dir + "/" + System.currentTimeMillis() + ".jpg");
+    }
+
+    /**
+     * 获取视频输出文件
+     * @param context
+     * @return
+     */
+    public static File getVideoOutFile(Context context) {
+        String dir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getAbsolutePath();
+        return new File(dir + "/" + System.currentTimeMillis() + ".mp4");
     }
 
     /**

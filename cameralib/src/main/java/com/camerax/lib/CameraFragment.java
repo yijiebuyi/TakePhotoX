@@ -226,7 +226,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     public void onClick(View v) {
         int vid = v.getId();
         if (vid == R.id.take_photo) {
-            mCameraView.take();
+            mCameraView.takePhoto();
         } else if (vid == R.id.switch_camera) {
             mCameraView.switchFace();
         } else if (vid == R.id.cancel) {
