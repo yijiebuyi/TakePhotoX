@@ -1,8 +1,6 @@
 package com.camerax.lib;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +16,6 @@ import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.view.CameraView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -28,11 +24,8 @@ import com.camerax.lib.core.ExAspectRatio;
 import com.camerax.lib.core.OnCameraListener;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.Executor;
 
-import static androidx.camera.core.ImageCapture.FLASH_MODE_OFF;
 import static com.camerax.lib.CameraFragment.KEY_CAMERA_OPTION;
 
 /**
@@ -201,5 +194,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         mStringBuilder.append(second);
 
         return mStringBuilder.toString();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mVideoView.stopRecording();
     }
 }

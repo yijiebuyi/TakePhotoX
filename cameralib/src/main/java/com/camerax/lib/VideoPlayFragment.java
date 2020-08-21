@@ -87,7 +87,7 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
         if (v.getId() == R.id.confirm_select) {
 
         } else if (v.getId() == R.id.cancel) {
-
+            getActivity().finish();
         }
     }
 
@@ -103,7 +103,7 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
     public void onStart() {
         super.onStart();
         if (mVideoView != null) {
-            mVideoView.restart();
+            mVideoView.start();
         }
     }
 
