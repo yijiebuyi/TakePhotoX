@@ -86,6 +86,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         mVideoView.setCameraLensFacing(mCameraOption.isFaceFront() ? CameraSelector.LENS_FACING_FRONT
                 : CameraSelector.LENS_FACING_BACK);
         mTakeVideoBtn.setOnClickListener(this);
+        mCancelBtn.setOnClickListener(this);
+        mSwitchCameraBtn.setOnClickListener(this);
     }
 
     public void setOnCameraListener(OnCameraListener listener) {
@@ -149,16 +151,22 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             mVideoView.toggleCamera();
         } else if (R.id.cancel == id) {
             if (mOnCameraWrapListener != null) {
-                mOnCameraWrapListener.onTaken(null);
+                mOnCameraWrapListener.onCancel();
             }
         }
     }
 
     private void startTimeCounter() {
         mCounterTv.setVisibility(View.VISIBLE);
+        mTakeVideoBtn.setImageResource(R.drawable.ic_recording);
         mStartTime = 0;
 
         mCounterTv.postDelayed(mTimeRunnable, 1000);
+    }
+
+    private void stopTimeCounter() {
+        mCounterTv.setVisibility(View.GONE);
+        mTakeVideoBtn.setImageResource(R.drawable.ic_record);
     }
 
     private Runnable mTimeRunnable = new Runnable() {

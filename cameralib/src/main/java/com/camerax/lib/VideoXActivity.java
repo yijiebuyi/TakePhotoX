@@ -82,6 +82,22 @@ public class VideoXActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putParcelable(VideoPlayFragment.KEY_VIDEO_URI, fileUri);
         fg.setArguments(data);
+        fg.setOnMediaListener(new OnMediaListener() {
+            @Override
+            public void onMediaLoad(boolean succ) {
+
+            }
+
+            @Override
+            public void onPhotoSelect(Uri uri) {
+                finishWithData(uri);
+            }
+
+            @Override
+            public void onCancel() {
+                enterVideoFragment();
+            }
+        });
 
         ft.replace(R.id.container, fg);
         ft.commit();

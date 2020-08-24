@@ -47,7 +47,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
     private ImageView mCancelBtn;
     private ImageView mConfirmSelectBtn;
 
-    private OnPhotoListener mOnPhotoListener;
+    private OnMediaListener mOnMediaListener;
     private Uri mPhotoUri;
 
     @Override
@@ -90,16 +90,16 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
                     .addListener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    if (mOnPhotoListener != null) {
-                        mOnPhotoListener.onPhotoLoad(false);
+                    if (mOnMediaListener != null) {
+                        mOnMediaListener.onMediaLoad(false);
                     }
                     return false;
                 }
 
                 @Override
                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    if (mOnPhotoListener != null) {
-                        mOnPhotoListener.onPhotoLoad(true);
+                    if (mOnMediaListener != null) {
+                        mOnMediaListener.onMediaLoad(true);
                     }
                     return false;
                 }
@@ -112,17 +112,17 @@ public class PhotoFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.confirm_select) {
-            if (mOnPhotoListener != null) {
-                mOnPhotoListener.onPhotoSelect(mPhotoUri);
+            if (mOnMediaListener != null) {
+                mOnMediaListener.onPhotoSelect(mPhotoUri);
             }
         } else if (v.getId() == R.id.cancel) {
-            if (mOnPhotoListener != null) {
-                mOnPhotoListener.onCancel();
+            if (mOnMediaListener != null) {
+                mOnMediaListener.onCancel();
             }
         }
     }
 
-    public void setOnPhotoListener(OnPhotoListener listener) {
-        mOnPhotoListener = listener;
+    public void setOnMediaListener(OnMediaListener listener) {
+        mOnMediaListener = listener;
     }
 }

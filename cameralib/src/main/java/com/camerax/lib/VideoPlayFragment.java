@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.devbrackets.android.exomedia.ui.widget.VideoView;
 
@@ -42,6 +43,7 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
     private ImageView mConfirmSelectBtn;
 
     private Uri mVideoUri;
+    private OnMediaListener mOnMediaListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -77,6 +79,12 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
         if (data != null) {
             mVideoUri = data.getParcelable(KEY_VIDEO_URI);
             mVideoView.setVideoURI(mVideoUri);
+            mVideoView.setOnErrorListener(new OnErrorListener() {
+                @Override
+                public boolean onError(Exception e) {
+                    return false;
+                }
+            });
         } else {
             Toast.makeText(mContext, "img load failed", Toast.LENGTH_SHORT).show();
         }
@@ -85,9 +93,13 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.confirm_select) {
-
+            if (mOnMediaListener != null) {
+                mOnMediaListener.onPhotoSelect(mVideoUri);
+            }
         } else if (v.getId() == R.id.cancel) {
-            getActivity().finish();
+            if (mOnMediaListener != null) {
+                mOnMediaListener.onCancel();
+            }
         }
     }
 
@@ -110,5 +122,12 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onPrepared() {
         mVideoView.start();
+        if (mOnMediaListener != null) {
+            mOnMediaListener.onMediaLoad(true);
+        }
+    }
+
+    public void setOnMediaListener(OnMediaListener listener) {
+        mOnMediaListener = listener;
     }
 }

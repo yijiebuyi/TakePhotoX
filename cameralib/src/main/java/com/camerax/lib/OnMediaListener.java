@@ -16,15 +16,15 @@ import android.net.Uri;
  * 修改日期
  */
 
-public interface OnPhotoListener {
+public interface OnMediaListener {
     /**
-     * 图片加载完成回调
+     * 媒体（图片，视频）加载完成回调
      * @param succ
      */
-    void onPhotoLoad(boolean succ);
+    void onMediaLoad(boolean succ);
 
     /**
-     * 图片被选择
+     * 媒体（图片，视频）被选择
      */
     void onPhotoSelect(Uri uri);
 

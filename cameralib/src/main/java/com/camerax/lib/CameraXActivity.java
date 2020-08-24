@@ -86,7 +86,7 @@ public class CameraXActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putParcelable(PhotoFragment.KEY_PHOTO_URI, fileUri);
         fg.setArguments(data);
-        fg.setOnPhotoListener(new OnPhotoListener() {
+        fg.setOnMediaListener(new OnMediaListener() {
             @Override
             public void onPhotoSelect(Uri uri) {
                 finishWithData(uri);
@@ -98,7 +98,7 @@ public class CameraXActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPhotoLoad(boolean succ) {
+            public void onMediaLoad(boolean succ) {
 
             }
         });
