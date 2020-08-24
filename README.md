@@ -2,7 +2,7 @@
 基于camerax拍照
 
 # Demo下载
-https://www.pgyer.com/53su
+https://www.pgyer.com/takephotox
 安装密码：123456
 
 ### 功能
