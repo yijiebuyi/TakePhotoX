@@ -115,5 +115,35 @@ startActivityForResult(new Intent(MainActivity.this, CameraXActivity.class), 100
             .frameMode(ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE)
             .frameRatio(0.6f)
             .build());
+
+@Override
+    public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
+        if (mQrCodeParser == null) {
+            mQrCodeParser = new QrCodeParser(mQRCodeView.getPreviewSize(), mQRCodeView.getOptions());
+            mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
+                @Override
+                public void onSucc(final String result) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFail() {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(mContext, R.string.qr_code_fail, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }
+
+       mQrCodeParser.execute(image, elapseTime);
+    }
 ```
 
