@@ -1,12 +1,14 @@
 package com.photo;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.camerax.lib.analysis.QrCodeCallback;
 import com.camerax.lib.analysis.QrCodeFragment;
 
 /**
@@ -34,6 +36,12 @@ public class QrCodeActivity extends AppCompatActivity {
         final FragmentTransaction ft = fm.beginTransaction();
 
         final QrCodeFragment fg = new QrCodeFragment();
+        fg.setWrapQrCodeCallback(new QrCodeCallback() {
+            @Override
+            public void onQrScanResult(boolean succ, String result) {
+                Toast.makeText(QrCodeActivity.this, result, Toast.LENGTH_SHORT).show();
+            }
+        });
         ft.replace(com.camerax.lib.R.id.container, fg);
         ft.commit();
     }

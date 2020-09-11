@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.core.ImageProxy;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.camerax.lib.core.CameraOption;
@@ -31,14 +32,18 @@ import com.camerax.lib.core.OnImgAnalysisListener;
  * 修改日期
  */
 
-public class QRCodeView extends FrameLayout {
+public class QRCodeView extends FrameLayout implements OnFocusListener, OnImgAnalysisListener {
     private Context mContext;
+
+    private QrCodeParser mQrCodeParser;
 
     private CameraView mCameraView;
     private ScannerView mScannerViw;
 
     private CameraOption mCameraOption;
     private ScannerFrameOption mScannerFrameOption;
+
+    private QrCodeCallback mQrCodeCallback;
 
     public QRCodeView(@NonNull Context context) {
         super(context);
@@ -67,6 +72,7 @@ public class QRCodeView extends FrameLayout {
         mCameraView = new CameraView(context, attrs);
         mScannerViw = new ScannerView(context, attrs);
 
+        mCameraView.setOnImgAnalysisListener(this);
         addView(mCameraView, params);
         addView(mScannerViw, params);
     }
@@ -108,12 +114,8 @@ public class QRCodeView extends FrameLayout {
         //TODO
     }
 
-    public void setOnFocusListener(OnFocusListener listener) {
-       mCameraView.setOnFocusListener(listener);
-    }
-
-    public void setOnImgAnalysisListener(OnImgAnalysisListener listener) {
-        mCameraView.setOnImgAnalysisListener(listener);
+    public void setOnQrCodeCallback(QrCodeCallback callback) {
+        mQrCodeCallback = callback;
     }
 
     /**
@@ -130,5 +132,50 @@ public class QRCodeView extends FrameLayout {
      */
     public ScannerFrameOption getOptions() {
         return mScannerViw.getOptions();
+    }
+
+    @Override
+    public void onStartFocus(float x, float y, float rawX, float rawY) {
+
+    }
+
+    @Override
+    public void onEndFocus(boolean succ) {
+
+    }
+
+    @Override
+    public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
+        if (mQrCodeParser == null) {
+            mQrCodeParser = new QrCodeParser(getPreviewSize(), getOptions());
+            mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
+                @Override
+                public void onSucc(final String result) {
+                    onQrCodeScanCallback(true, result);
+                }
+
+                @Override
+                public void onFail() {
+                    onQrCodeScanCallback(false, null);
+                }
+            });
+        }
+
+        mQrCodeParser.execute(image, elapseTime);
+    }
+
+    /**
+     * 二维码扫描回调
+     * @param result
+     */
+    private void onQrCodeScanCallback(final boolean succ, final String result) {
+        if (mQrCodeCallback != null) {
+            getHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    mQrCodeCallback.onQrScanResult(succ, result);
+                }
+            });
+        }
     }
 }

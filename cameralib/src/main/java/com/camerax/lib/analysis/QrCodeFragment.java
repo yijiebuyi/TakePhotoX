@@ -30,11 +30,11 @@ import com.camerax.lib.core.OnImgAnalysisListener;
  * 修改日期
  */
 
-public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAnalysisListener {
+public class QrCodeFragment extends Fragment implements QrCodeCallback{
     private QRCodeView mQRCodeView;
-    private QrCodeParser mQrCodeParser;
 
     private Context mContext;
+    private QrCodeCallback mWrapQrCodeCallback;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -46,8 +46,7 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mQRCodeView = new QRCodeView(mContext);
-        mQRCodeView.setOnFocusListener(this);
-        mQRCodeView.setOnImgAnalysisListener(this);
+        mQRCodeView.setOnQrCodeCallback(this);
         mQRCodeView.setScannerFrameOption(new ScannerFrameOption.Builder()
                 .frameMode(ScannerFrameOption.FrameMode.MODE_FRAME_SQUARE)
                 .frameRatio(0.6f)
@@ -61,45 +60,14 @@ public class QrCodeFragment extends Fragment implements OnFocusListener, OnImgAn
         mQRCodeView.startScan(this);
     }
 
-
     @Override
-    public void onStartFocus(float x, float y, float rawX, float rawY) {
-
-    }
-
-    @Override
-    public void onEndFocus(boolean succ) {
-
-    }
-
-    @Override
-    public void onImageAnalysis(@NonNull ImageProxy image, long elapseTime) {
-        if (mQrCodeParser == null) {
-            mQrCodeParser = new QrCodeParser(mQRCodeView.getPreviewSize(), mQRCodeView.getOptions());
-            mQrCodeParser.setQRCallback(new QrCodeParser.QRCallback() {
-                @Override
-                public void onSucc(final String result) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onFail() {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(mContext, R.string.qr_code_fail, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+    public void onQrScanResult(boolean succ, String result) {
+        if (mWrapQrCodeCallback != null) {
+            mWrapQrCodeCallback.onQrScanResult(succ, result);
         }
-
-       mQrCodeParser.execute(image, elapseTime);
     }
 
+    public void setWrapQrCodeCallback(QrCodeCallback callback) {
+        mWrapQrCodeCallback = callback;
+    }
 }
