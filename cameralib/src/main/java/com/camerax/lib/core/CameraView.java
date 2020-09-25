@@ -297,7 +297,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
     /**
      * 初始化配置信息
      */
-    private void initUseCases() {
+    private void initCameraConfig() {
         initImageAnalysis();
         initImageCapture();
         initPreview();
@@ -570,7 +570,7 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
         mExecutor = ContextCompat.getMainExecutor(getContext());
         mCameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
 
-        initUseCases();
+        initCameraConfig();
 
         mCameraProviderFuture.addListener(new Runnable() {
             @Override
