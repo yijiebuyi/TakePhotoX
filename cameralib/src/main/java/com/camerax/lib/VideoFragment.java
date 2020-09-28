@@ -26,8 +26,6 @@ import com.camerax.lib.core.OnCameraListener;
 import java.io.File;
 import java.util.concurrent.Executor;
 
-import static com.camerax.lib.CameraFragment.KEY_CAMERA_OPTION;
-
 /**
  * Copyright (C) 2017
  * 版权所有
@@ -43,6 +41,8 @@ import static com.camerax.lib.CameraFragment.KEY_CAMERA_OPTION;
  */
 
 public class VideoFragment extends Fragment implements View.OnClickListener {
+    private final int MAX_VIDEO_DURATION = 0; // <=0代表无限制
+
     private CameraView mVideoView;
     private CameraOption mCameraOption;
 
@@ -57,6 +57,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     private Executor mExecutor;
 
     private OnCameraListener mOnCameraWrapListener;
+    private int mMaxVideoDuration = MAX_VIDEO_DURATION;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,9 +97,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private CameraOption initOption() {
         Bundle data = getArguments();
+        mMaxVideoDuration = data != null ? data.getInt(CameraConstant.KEY_MAX_VIDEO_DURATION, MAX_VIDEO_DURATION) : MAX_VIDEO_DURATION;
         CameraOption option = null;
         Object obj = null;
-        if (data != null && (obj = data.getSerializable(KEY_CAMERA_OPTION)) != null) {
+        if (data != null && (obj = data.getSerializable(CameraConstant.KEY_CAMERA_OPTION)) != null) {
             option = (CameraOption) obj;
         } else {
             option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
@@ -174,7 +176,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         public void run() {
             mCounterTv.setText(formatDate(++mStartTime));
             if (mVideoView.isRecording()) {
-                mCounterTv.postDelayed(mTimeRunnable, 1000);
+                if (mStartTime > mMaxVideoDuration && mMaxVideoDuration > 0) {
+                    mTakeVideoBtn.performClick();
+                } else {
+                    mCounterTv.postDelayed(mTimeRunnable, 1000);
+                }
             }
         }
     };

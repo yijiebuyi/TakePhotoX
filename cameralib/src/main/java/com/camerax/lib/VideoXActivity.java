@@ -55,7 +55,9 @@ public class VideoXActivity extends AppCompatActivity {
                 .build();
 
         Bundle data = new Bundle();
-        data.putSerializable(CameraFragment.KEY_CAMERA_OPTION, option);
+        data.putSerializable(CameraConstant.KEY_CAMERA_OPTION, option);
+        data.putInt(CameraConstant.KEY_MAX_VIDEO_DURATION,
+                getIntent().getIntExtra(CameraConstant.KEY_MAX_VIDEO_DURATION, 0));
         cfg.setArguments(data);
         cfg.setOnCameraListener(new OnCameraListener() {
             @Override

@@ -41,15 +41,6 @@ import com.camerax.lib.core.SimpleAnimListener;
 public class CameraFragment extends Fragment implements View.OnClickListener, OnFocusListener,
         OnCameraListener, OnImgAnalysisListener, OnCameraFaceListener {
     private final static String TAG = "CameraFragment";
-    /**
-     * 是否显示底部控制器
-     */
-    public final static String KEY_SHOW_BOTTOM_PANEL = "key_show_bottom_panel";
-    /**
-     * 是否显示顶部控制器
-     */
-    public final static String KEY_SHOW_TOP_PANEL = "key_show_top_panel";
-    public final static String KEY_CAMERA_OPTION = "key_camera_option";
 
     private CameraView mCameraView;
 
@@ -191,12 +182,12 @@ public class CameraFragment extends Fragment implements View.OnClickListener, On
     private CameraOption initOption() {
         Bundle data = getArguments();
 
-        boolean hideBottomCtrl = data != null && !data.getBoolean(KEY_SHOW_BOTTOM_PANEL, true);
-        boolean hideTopCtrl = data != null && !data.getBoolean(KEY_SHOW_TOP_PANEL, true);
+        boolean hideBottomCtrl = data != null && !data.getBoolean(CameraConstant.KEY_SHOW_BOTTOM_PANEL, true);
+        boolean hideTopCtrl = data != null && !data.getBoolean(CameraConstant.KEY_SHOW_TOP_PANEL, true);
 
         CameraOption option = null;
         Object obj = null;
-        if (data != null && (obj = data.getSerializable(KEY_CAMERA_OPTION)) != null) {
+        if (data != null && (obj = data.getSerializable(CameraConstant.KEY_CAMERA_OPTION)) != null) {
             option = (CameraOption) obj;
         } else {
             option = new CameraOption.Builder(ExAspectRatio.RATIO_16_9)
