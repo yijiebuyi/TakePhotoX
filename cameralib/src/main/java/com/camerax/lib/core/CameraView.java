@@ -502,6 +502,10 @@ public class CameraView extends CameraPreview implements ICamera, IFlashLight,
 
     @Override
     public void focus(float x, float y, float rawX, float rawY) {
+        if (!isAttachedToWindow()) {
+            return;
+        }
+
         if (mOnFocusListener != null) {
             mOnFocusListener.onStartFocus(x , y, rawX, rawY);
         }
