@@ -26,7 +26,7 @@ allprojects {
 ```gradle
 
 dependencies {
-  implementation 'com.github.yijiebuyi:TakePhotoX:v1.2.0'
+  implementation 'com.github.yijiebuyi:TakePhotoX:v1.2.2'
 }
 
 ```
