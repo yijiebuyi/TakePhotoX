@@ -19,6 +19,24 @@ import androidx.camera.core.ImageProxy;
  */
 
 public class AnalysisRect {
+
+    /**
+     * @see #build(ImageProxy, float, Rect)
+     * @param image
+     * @param ratio
+     * @return
+     */
+    public static Rect build(ImageProxy image, float ratio) {
+       return build(image, ratio, null);
+    }
+
+    /**
+     *
+     * @param image 待分析的源图片
+     * @param ratio 待分析图片的区域比例
+     * @param src 外部传入的Rect，如果不为空，则修改Rect的l,t,r,b，否则构建一个新的Rect
+     * @return 返回待分析图片区域的Rect
+     */
     public static Rect build(ImageProxy image, float ratio, Rect src) {
         if (image == null || ratio < 0) {
             return null;
@@ -33,7 +51,7 @@ public class AnalysisRect {
         int r = l + (int)(imgW * ratio);
         int b = t + (int)(imgH * ratio);
 
-        if (src == null) {
+        if (src != null) {
             src.set(l, t, r, b);
             return src;
         }
